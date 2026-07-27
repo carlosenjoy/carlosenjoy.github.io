@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Future Quest · 8º ano · Recomposição</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@6.0.1/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@6.0.1/dist/reveal.css">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --green:#3fb618;  --green-d:#2e8a10;  --green-l:#e6f7de;
+    --blue:#1cb0f6;   --blue-d:#1288bd;   --blue-l:#e2f4fe;
+    --yellow:#ffc800; --yellow-d:#d9a800; --yellow-l:#fff6d9;
+    --red:#ff4b4b;    --red-d:#cc3838;    --red-l:#ffe8e8;
+    --purple:#b25cf0; --purple-d:#8c40c2; --purple-l:#f5e8fe;
+    --ink:#22252b;    --ink2:#6d7480;
+    --line:#dfe4ea;   --bg:#fbfcfe;
+  }
+  html,body{background:var(--bg);}
+  .reveal{font-family:'Nunito',system-ui,sans-serif;color:var(--ink);font-weight:700;}
+  .reveal .slides{text-align:left;}
+  .reveal h1,.reveal h2{font-family:'Fredoka',sans-serif;font-weight:700;color:var(--ink);
+    text-transform:none;letter-spacing:0;line-height:1.1;margin:0 0 .3em;}
+  .reveal h1{font-size:3.1rem;}
+  .reveal h2{font-size:2.2rem;}
+  .reveal p{font-size:1.35rem;line-height:1.45;}
+  .reveal em{font-style:normal;color:var(--blue-d);}
+  .reveal .progress{color:var(--green);height:6px;}
+  .reveal .controls{color:var(--blue);}
+  .reveal .slide-number{background:transparent;color:var(--ink2);font-size:.85rem;font-weight:700;}
+
+  /* faixa superior */
+  .tag{display:inline-block;font-family:'Fredoka',sans-serif;font-size:1rem;font-weight:600;
+    color:#fff;background:var(--blue);padding:.4rem 1.1rem;border-radius:999px;margin-bottom:1.1rem;}
+  .tag.g{background:var(--green);} .tag.y{background:var(--yellow);color:#5a4600;}
+  .tag.p{background:var(--purple);} .tag.r{background:var(--red);}
+  .tag .t{opacity:.85;font-weight:500;}
+
+  .lead{font-size:1.75rem;line-height:1.35;max-width:20em;}
+  .sub{color:var(--ink2);font-size:1.15rem;}
+  .tip{color:var(--ink2);font-size:1.05rem;margin-top:1.3rem;}
+
+  /* PLACAR fixo */
+  #score{position:fixed;top:14px;right:18px;z-index:60;
+    font-family:'Fredoka',sans-serif;font-size:1.25rem;color:var(--yellow-d);
+    background:#fff;border:3px solid var(--yellow);border-bottom-width:5px;
+    border-radius:999px;padding:.3rem 1rem;}
+  #score .n{color:var(--ink);}
+
+  /* CARTÕES DE VOCABULÁRIO */
+  .cards{display:flex;flex-wrap:wrap;gap:1rem;margin-top:.5rem;}
+  .card{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:.4rem;min-width:9.5rem;flex:1 1 9.5rem;padding:1.1rem .8rem;
+    background:#fff;border:3px solid var(--line);border-bottom-width:6px;border-radius:20px;
+    font-family:inherit;font-size:1.3rem;font-weight:800;color:var(--ink);
+    cursor:pointer;text-align:center;transition:transform .12s ease,border-color .12s ease;
+  }
+  .card:hover{transform:translateY(-3px);border-color:var(--blue);}
+  .card:active{transform:translateY(2px);border-bottom-width:3px;}
+  .card .ico{font-size:3rem;line-height:1;}
+  .card .pt{font-size:1rem;font-weight:700;color:var(--blue-d);
+    opacity:0;max-height:0;overflow:hidden;transition:opacity .2s ease;}
+  .card.open{border-color:var(--blue);background:var(--blue-l);}
+  .card.open .pt{opacity:1;max-height:4rem;}
+  .cards.wide .card{flex:1 1 100%;flex-direction:row;justify-content:flex-start;
+    gap:1.2rem;text-align:left;padding:1rem 1.4rem;}
+  .cards.wide .card .ico{font-size:2.6rem;}
+  .cards.wide .card .txt{display:flex;flex-direction:column;}
+
+  /* BOTÕES DE RESPOSTA */
+  .opts{display:flex;flex-direction:column;gap:.85rem;margin-top:1.1rem;max-width:30em;}
+  .opt{
+    display:flex;align-items:center;gap:1rem;padding:1.05rem 1.3rem;
+    background:#fff;border:3px solid var(--line);border-bottom-width:6px;border-radius:18px;
+    font-family:inherit;font-size:1.35rem;font-weight:800;color:var(--ink);
+    cursor:pointer;text-align:left;transition:transform .12s ease,border-color .12s ease;
+  }
+  .opt:hover:not(:disabled){transform:translateY(-3px);border-color:var(--blue);}
+  .opt:active:not(:disabled){transform:translateY(2px);border-bottom-width:3px;}
+  .opt:disabled{cursor:default;}
+  .opt .key{flex:0 0 auto;width:2.1rem;height:2.1rem;border-radius:12px;background:#eef1f5;
+    color:var(--ink2);font-size:1.05rem;display:grid;place-items:center;font-family:'Fredoka',sans-serif;}
+  .opt.correct{border-color:var(--green);background:var(--green-l);}
+  .opt.correct .key{background:var(--green);color:#fff;}
+  .opt.wrong{border-color:var(--red);background:var(--red-l);}
+  .opt.wrong .key{background:var(--red);color:#fff;}
+
+  /* FAIXA DE FEEDBACK */
+  .fb{position:fixed;left:0;right:0;bottom:0;z-index:70;transform:translateY(110%);
+    transition:transform .28s cubic-bezier(.2,.9,.3,1.2);
+    padding:1.1rem 2rem;display:flex;align-items:center;gap:1rem;
+    font-family:'Fredoka',sans-serif;font-size:1.5rem;}
+  .fb.show{transform:translateY(0);}
+  .fb.ok{background:var(--green-l);color:var(--green-d);border-top:5px solid var(--green);}
+  .fb.no{background:var(--red-l);color:var(--red-d);border-top:5px solid var(--red);}
+  .fb .big{font-size:2.4rem;}
+
+  /* TABELAS */
+  .reveal table{border-collapse:separate;border-spacing:0 .45rem;width:100%;font-size:1.25rem;}
+  .reveal table td{background:#fff;padding:.75rem 1rem;border-top:3px solid var(--line);
+    border-bottom:3px solid var(--line);}
+  .reveal table td:first-child{border-left:3px solid var(--line);border-radius:14px 0 0 14px;}
+  .reveal table td:last-child{border-right:3px solid var(--line);border-radius:0 14px 14px 0;}
+  .reveal table td.en{font-weight:800;}
+  .reveal table td.pt{color:var(--blue-d);}
+  .reveal table td.flagcell{font-size:1.9rem;width:3rem;}
+
+  /* DIÁLOGO */
+  .bubbles{display:flex;flex-direction:column;gap:.7rem;margin-top:.6rem;max-width:30em;}
+  .bub{padding:.9rem 1.3rem;border-radius:20px;font-size:1.4rem;max-width:85%;}
+  .bub.a{background:var(--blue-l);border:3px solid var(--blue);border-bottom-left-radius:6px;align-self:flex-start;}
+  .bub.b{background:var(--green-l);border:3px solid var(--green);border-bottom-right-radius:6px;align-self:flex-end;}
+  .bub .pt{display:block;font-size:.95rem;color:var(--ink2);font-weight:700;margin-top:.15rem;}
+
+  /* SIMON */
+  .simon{margin-top:.8rem;background:#fff;border:4px solid var(--purple);border-bottom-width:8px;
+    border-radius:26px;padding:2.2rem 1.4rem;text-align:center;}
+  .simon .cmd{font-family:'Fredoka',sans-serif;font-size:2.9rem;color:var(--purple-d);min-height:1.25em;line-height:1.2;}
+  .simon .cmd .sim{color:var(--ink2);}
+  .simon .cmd.trap{color:var(--red);}
+  .btn{font-family:'Fredoka',sans-serif;font-size:1.3rem;color:#fff;background:var(--purple);
+    border:none;border-bottom:5px solid var(--purple-d);border-radius:16px;
+    padding:.75rem 1.8rem;cursor:pointer;margin-top:1.3rem;}
+  .btn:active{transform:translateY(2px);border-bottom-width:2px;}
+  .btn.g{background:var(--green);border-bottom-color:var(--green-d);}
+
+  /* QUIZ PAÍSES */
+  .natflag{font-size:5.5rem;line-height:1;}
+  .natname{font-family:'Fredoka',sans-serif;font-size:2.6rem;margin:.1rem 0 .9rem;}
+  .natopts{display:flex;gap:.8rem;flex-wrap:wrap;}
+  .natopts .opt{flex:1 1 9rem;justify-content:center;text-align:center;}
+  .bar{height:14px;background:#e9edf2;border-radius:999px;overflow:hidden;max-width:26em;margin-bottom:1rem;}
+  .bar i{display:block;height:100%;width:0;background:var(--green);border-radius:999px;transition:width .4s ease;}
+
+  /* FORMULÁRIO */
+  .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem 1.3rem;margin-top:.4rem;}
+  .fgrid label{display:block;font-family:'Fredoka',sans-serif;font-size:1.05rem;color:var(--blue-d);margin-bottom:.25rem;}
+  .fgrid input{width:100%;padding:.75rem .9rem;border:3px solid var(--line);border-bottom-width:5px;
+    border-radius:14px;font-family:inherit;font-size:1.2rem;font-weight:700;color:var(--ink);background:#fff;}
+  .fgrid input:focus{outline:none;border-color:var(--blue);}
+
+  /* CAPA */
+  .cover{text-align:center;}
+  .cover .hero{font-size:6.5rem;line-height:1;}
+  .cover h1{font-size:3.4rem;margin-top:.2rem;}
+  .cover .pill{display:inline-block;background:var(--yellow);color:#5a4600;
+    font-family:'Fredoka',sans-serif;font-size:1.15rem;padding:.45rem 1.4rem;border-radius:999px;margin-top:1rem;}
+
+  /* E-MAIL */
+  .mail{background:#fff;border:3px solid var(--blue);border-bottom-width:6px;border-radius:20px;
+    overflow:hidden;margin-top:.3rem;}
+  .mail .mailhead{background:var(--blue-l);padding:.7rem 1.2rem;display:flex;flex-direction:column;
+    gap:.1rem;font-size:.95rem;color:var(--ink2);border-bottom:3px solid var(--blue);}
+  .mail .mailbody{padding:1rem 1.3rem;}
+  .mail .mailbody p{font-size:1.12rem;line-height:1.5;margin:.45rem 0;}
+  .mail .mailbody b{color:var(--blue-d);}
+
+  /* TEXTO NARRATIVO */
+  .story{background:#fff;border:3px solid var(--green);border-bottom-width:6px;border-radius:20px;
+    padding:1.1rem 1.4rem;margin-top:.3rem;}
+  .story .who{font-family:'Fredoka','Trebuchet MS',sans-serif;font-size:1.3rem;color:var(--green-d);
+    margin-bottom:.5rem;}
+  .story p{font-size:1.15rem;line-height:1.5;margin:.45rem 0;}
+  .story b{color:var(--green-d);}
+
+  /* CAIXA DE PERGUNTA SEQUENCIAL */
+  .qbox{margin-top:.4rem;}
+  .qbox .counter{font-family:'Fredoka','Trebuchet MS',sans-serif;font-size:1rem;color:var(--ink2);}
+  .qbox .qtext{font-family:'Fredoka','Trebuchet MS',sans-serif;font-size:1.9rem;margin:.3rem 0 .2rem;line-height:1.2;}
+
+  /* FRASE COM LACUNAS */
+  .writebox{background:#fff;border:3px solid var(--yellow);border-bottom-width:6px;border-radius:20px;
+    padding:1.4rem 1.3rem;margin-top:.5rem;font-size:1.45rem;line-height:2.4;}
+  .writebox .fx{font-weight:800;}
+  .writebox .inline{font-family:inherit;font-size:1.25rem;font-weight:800;color:var(--blue-d);
+    border:3px solid var(--line);border-bottom-width:5px;border-radius:12px;padding:.3rem .6rem;background:#fff;}
+  .writebox .inline:focus{outline:none;border-color:var(--blue);}
+  .writebox select.sel{color:var(--purple-d);cursor:pointer;}
+
+  .wrongform{color:var(--red);text-decoration:line-through;text-decoration-thickness:3px;}
+  .center{text-align:center;}
+  .missions{display:flex;gap:1rem;justify-content:center;margin-top:1.2rem;flex-wrap:wrap;}
+  .mission{background:#fff;border:3px solid var(--line);border-bottom-width:6px;border-radius:20px;
+    padding:1rem 1.2rem;text-align:center;flex:1 1 8rem;}
+  .mission .ico{font-size:2.6rem;}
+  .mission .lb{font-family:'Fredoka',sans-serif;font-size:1.05rem;margin-top:.3rem;}
+</style>
+</head>
+<body>
+
+<div id="score">⭐ <span class="n" id="scoreN">0</span></div>
+<div class="fb" id="fb"><span class="big" id="fbIco"></span><span id="fbTxt"></span></div>
+
+<div id="score">⭐ <span class="n" id="scoreN">0</span></div>
+<div class="fb" id="fb"><span class="big" id="fbIco"></span><span id="fbTxt"></span></div>
+
+<div class="reveal"><div class="slides">
+
+<!-- ===================== PARTE 1 · GOING TO ===================== -->
+
+<!-- 1 CAPA -->
+<section data-background-color="#fbfcfe">
+  <div class="cover">
+    <div class="hero">📅 ✈️</div>
+    <h1>Future Quest</h1>
+    <p class="sub">What are you going to do?</p>
+    <div class="pill">Parte 1 de 2 · 8º ano · ⭐ ganhe estrelas</div>
+    <div class="missions">
+      <div class="mission"><div class="ico">➡️</div><div class="lb">Planos</div></div>
+      <div class="mission"><div class="ico">🚫</div><div class="lb">Negativa</div></div>
+      <div class="mission"><div class="ico">⚖️</div><div class="lb">some / any</div></div>
+      <div class="mission"><div class="ico">⏰</div><div class="lb">Quando</div></div>
+    </div>
+  </div>
+  <aside class="notes">
+    Tecla <b>S</b> = suas notas numa janela separada. Setas = avançar. <b>ESC</b> = todos os slides. <b>F</b> = tela cheia.<br><br>
+    Abra com o objetivo: "hoje vocês vão contar planos em inglês — o que vão fazer e o que <b>não</b> vão fazer."
+  </aside>
+</section>
+
+<!-- 2 PARA COMEÇAR -->
+<section>
+  <span class="tag y">🚀 Para começar <span class="t">· 3 min</span></span>
+  <p class="lead">Quais são os seus planos para o <b>próximo fim de semana</b>?</p>
+  <div class="cards" style="margin-top:1.2rem;">
+    <div class="card" style="cursor:default;"><span class="ico">🏖️</span>Praia</div>
+    <div class="card" style="cursor:default;"><span class="ico">🎮</span>Videogame</div>
+    <div class="card" style="cursor:default;"><span class="ico">😴</span>Dormir</div>
+    <div class="card" style="cursor:default;"><span class="ico">🛒</span>Shopping</div>
+  </div>
+  <aside class="notes">
+    <b>3 minutos.</b> Em português mesmo. Guarde duas ou três respostas — eles vão traduzir as próprias
+    frases daqui a pouco, e isso engaja muito mais que a tabela do livro.
+  </aside>
+</section>
+
+<!-- 3 A CONVERSA -->
+<section>
+  <span class="tag">🗣️ Weekend plans</span>
+  <div class="story">
+    <div class="who">👦👧 Sarah, Lucas e Jamie combinando o fim de semana</div>
+    <p>"On Saturday morning, I<b>'m going to</b> the park with my family."</p>
+    <p>"I<b>'m going to</b> watch a movie on Saturday afternoon."</p>
+    <p>"They <b>are going to</b> play soccer next weekend."</p>
+    <p>"She <b>is going to</b> visit her grandma tomorrow."</p>
+  </div>
+  <p class="tip">Repare no que se repete em todas: <em>going to</em>.</p>
+  <aside class="notes">
+    Peça para acharem o que as quatro frases têm em comum antes de você explicar. Alguém aponta
+    o "going to". É o gancho — a regra sai deles, não de você.
+  </aside>
+</section>
+
+<!-- 4 FOCO: BE + GOING TO -->
+<section>
+  <span class="tag p">➡️ be + going to</span>
+  <p class="lead">Para falar de <b>plano</b>, use o verbo <b>be</b> + <b>going to</b> + a ação.</p>
+  <div class="cards" data-cards>
+    <button class="card"><span class="ico">1️⃣</span>I <b>am</b><span class="pt">I'm going to study.</span></button>
+    <button class="card"><span class="ico">👤</span>He / She / It <b>is</b><span class="pt">She is going to travel.</span></button>
+    <button class="card"><span class="ico">👥</span>You / We / They <b>are</b><span class="pt">They are going to play.</span></button>
+  </div>
+  <p class="tip">A parte que muda é só o <b>be</b>. O <em>going to</em> nunca muda.</p>
+  <aside class="notes">
+    Ponto que destrava: <b>o "going to" é fixo</b>. O aluno só precisa acertar am/is/are, que ele já
+    conhece do presente. Diga isso — reduz o tamanho do problema pela metade.
+  </aside>
+</section>
+
+<!-- 5 FUTURE TIME MARKERS -->
+<section>
+  <span class="tag y">⏰ Future time markers</span>
+  <p class="sub">As palavras que mostram que é futuro.</p>
+  <div class="cards" data-cards>
+    <button class="card"><span class="ico">🌅</span>Tomorrow<span class="pt">amanhã</span></button>
+    <button class="card"><span class="ico">📆</span>Next week<span class="pt">semana que vem</span></button>
+    <button class="card"><span class="ico">🗓️</span>Next weekend<span class="pt">fim de semana que vem</span></button>
+    <button class="card"><span class="ico">🌙</span>Tonight<span class="pt">hoje à noite</span></button>
+    <button class="card"><span class="ico">📅</span>Next month<span class="pt">mês que vem</span></button>
+    <button class="card"><span class="ico">⏭️</span>The day after tomorrow<span class="pt">depois de amanhã</span></button>
+  </div>
+  <aside class="notes">
+    Compare de propósito com o 7º ano, se você deu: lá era <i>yesterday</i> e <i>ago</i> (passado),
+    aqui é <i>tomorrow</i> e <i>next</i> (futuro). O time marker continua entregando o tempo verbal
+    antes do verbo. É a mesma estratégia de leitura.
+  </aside>
+</section>
+
+<!-- 6 PAUSE E RESPONDA -->
+<section>
+  <span class="tag r">✋ Pause e responda</span>
+  <p class="lead">She ____ talk to you tomorrow.</p>
+  <div class="opts" data-quiz data-ok="Isso! She → is going to ✅" data-no="She é 'ela'. Qual forma do verbo be combina com ela?">
+    <button class="opt" data-correct="false"><span class="key">A</span> am going to</button>
+    <button class="opt" data-correct="false"><span class="key">B</span> is going</button>
+    <button class="opt" data-correct="true"><span class="key">C</span> is going to</button>
+    <button class="opt" data-correct="false"><span class="key">D</span> are going to</button>
+  </div>
+  <aside class="notes">
+    A opção B é a pegadinha boa: acertou o <i>is</i>, mas comeu o <i>to</i>. Se muita gente cair nela,
+    volte um slide e reforce que "going to" é bloco fixo, não se corta.
+  </aside>
+</section>
+
+<!-- 7 FORMA NEGATIVA -->
+<section>
+  <span class="tag p">🚫 Forma negativa</span>
+  <p class="lead">Para dizer que <b>não</b> vai fazer, entra o <b>not</b>.</p>
+  <div class="bubbles">
+    <div class="bub b">She <b>is not</b> going to wake up early.</div>
+    <div class="bub b">She <b>isn't</b> going to wake up early.</div>
+    <div class="bub a">"We <b>are not</b> going to have any homework."</div>
+    <div class="bub a">"I<b>'m not</b> going to do any chores either."</div>
+  </div>
+  <p class="tip">O <b>not</b> entra logo depois do <em>be</em>. O resto continua igual.</p>
+  <aside class="notes">
+    As duas últimas falas são do Lucas e da Sophia, do diálogo da Atividade 1 (p. 218).<br><br>
+    Mostre que <i>isn't</i> e <i>is not</i> são a mesma coisa — a contraída é a que eles vão ouvir
+    em série e música.
+  </aside>
+</section>
+
+<!-- 8 SOME x ANY -->
+<section>
+  <span class="tag y">⚖️ some &nbsp;×&nbsp; any</span>
+  <div class="bubbles">
+    <div class="bub b">I am going to hang out with <b>some</b> friends.<span class="pt">alguns amigos — frase afirmativa</span></div>
+    <div class="bub a">We are <b>not</b> going to do <b>any</b> homework.<span class="pt">nenhuma lição — frase negativa</span></div>
+  </div>
+  <p class="tip"><b>some</b> → frase afirmativa &nbsp;·&nbsp; <b>any</b> → frase negativa</p>
+  <aside class="notes">
+    Regra prática para o quadro: <b>frase com not pede any</b>. Só isso já resolve o exercício.<br><br>
+    Se algum aluno perguntar sobre pergunta ("Do you have any...?"), confirme que também usa any —
+    mas não abra esse assunto se ninguém puxar, para não perder o foco.
+  </aside>
+</section>
+
+<!-- 9 PAUSE E RESPONDA -->
+<section>
+  <span class="tag r">✋ Pause e responda</span>
+  <p class="lead">She ____ come here tomorrow.</p>
+  <div class="opts" data-quiz data-ok="Isso! is + not + going to ✅" data-no="Ordem certa: primeiro o be, depois o not, depois going to.">
+    <button class="opt" data-correct="false"><span class="key">A</span> not are going to</button>
+    <button class="opt" data-correct="false"><span class="key">B</span> is not going</button>
+    <button class="opt" data-correct="false"><span class="key">C</span> am not going to</button>
+    <button class="opt" data-correct="true"><span class="key">D</span> is not going to</button>
+  </div>
+  <aside class="notes">
+    Peer Instruction. As três erradas cobrem os três erros clássicos: ordem invertida (A),
+    faltou o "to" (B), verbo be errado para o sujeito (C).
+  </aside>
+</section>
+
+<!-- 10 NA PRÁTICA: NEGATIVA -->
+<section>
+  <span class="tag g">✍️ Negative form <span class="t">· livro p. 218 · 5 min</span></span>
+  <div class="qbox">
+    <div class="counter" id="ngCounter"></div>
+    <div class="qtext" id="ngQ"></div>
+    <div class="opts" id="ngOpts" style="max-width:100%;"></div>
+  </div>
+  <aside class="notes">
+    Atividade 2 da Aula 3, p. 218.<br>
+    Gabarito: I am not going to visit any friends · She is not going to cook dinner ·
+    They are not going to play volleyball.<br><br>
+    Repare que a letra (a) exige o <b>any</b> junto — é a que junta as duas coisas da aula.
+  </aside>
+</section>
+
+<!-- 11 TABELA ANA CAROL PEDRO -->
+<section>
+  <span class="tag g">📋 Holiday plans <span class="t">· livro p. 219 · 6 min</span></span>
+  <p class="sub">✅ vai fazer &nbsp;·&nbsp; ❌ não vai fazer. Escreva a frase de cada um.</p>
+  <table>
+    <tr><th></th><th>go to the countryside</th><th>go to the park</th><th>watch any movie</th></tr>
+    <tr><td class="en">Ana</td><td>❌</td><td>✅</td><td>❌</td></tr>
+    <tr><td class="en">Carol</td><td>✅</td><td>❌</td><td>❌</td></tr>
+    <tr><td class="en">Pedro and Pam</td><td>❌</td><td>❌</td><td>❌</td></tr>
+  </table>
+  <p class="tip">Modelo: <em>She is going to the park. She is not going to watch any movie.</em></p>
+  <aside class="notes">
+    Atividade 3 da Aula 3, p. 219. No caderno, não na tela.<br><br>
+    <b>Pedro and Pam são dois</b> — a linha inteira vai de <i>are</i>. É o único lugar do exercício
+    que cobra o plural. Circule ouvindo quem escreveu "is".
+  </aside>
+</section>
+
+<!-- 12 PRODUÇÃO PARTE 1 -->
+<section>
+  <span class="tag y">⭐ My plans <span class="t">· 6 min</span></span>
+  <h2>Sua vez</h2>
+  <div class="writebox" style="font-size:1.3rem;line-height:2.3;">
+    <span class="fx">Next weekend, I</span>
+    <select class="inline sel"><option>am going to</option><option>am not going to</option></select>
+    <select class="inline sel">
+      <option>go to</option><option>watch</option><option>play</option>
+      <option>visit</option><option>study</option><option>hang out with</option>
+    </select>
+    <input type="text" class="inline" placeholder="o quê / onde" style="width:10rem;">
+    <span class="fx">.</span><br>
+    <span class="fx">And I</span>
+    <select class="inline sel"><option>am not going to</option><option>am going to</option></select>
+    <select class="inline sel">
+      <option>do any homework</option><option>wake up early</option>
+      <option>study</option><option>go to the mall</option>
+    </select>
+    <span class="fx">.</span>
+  </div>
+  <p class="tip">Exemplo: <em>Next weekend, I am going to play video games. And I am not going to do any homework.</em></p>
+  <aside class="notes">
+    <b>Evidência da Parte 1.</b> Print ou cópia no caderno.<br><br>
+    A segunda frase força a negativa e o <i>any</i> de uma vez só. Quem completar as duas
+    dominou o essencial da aula.
+  </aside>
+</section>
+
+<!-- 13 FECHA PARTE 1 -->
+<section>
+  <div class="center">
+    <div style="font-size:5rem;line-height:1;">✅</div>
+    <h1 style="font-size:2.6rem;">Part 1 complete!</h1>
+    <p class="sub">Antes do intervalo:</p>
+    <div class="missions">
+      <div class="mission"><div class="ico">➡️</div><div class="lb">Um plano<br>seu em inglês</div></div>
+      <div class="mission"><div class="ico">🚫</div><div class="lb">Onde entra<br>o not?</div></div>
+      <div class="mission"><div class="ico">⚖️</div><div class="lb">some ou any<br>na negativa?</div></div>
+    </div>
+    <p class="tip">Você já tem <b class="scoreEcho">0</b> estrelas ⭐</p>
+  </div>
+  <aside class="notes">
+    Rápido e oral. Na Parte 2 muda completamente de assunto — avise: "agora a gente vai ler
+    trechos de livros que vocês conhecem."
+  </aside>
+</section>
+
+<!-- ===================== PARTE 2 · READING DESCRIPTIONS ===================== -->
+
+<!-- 14 CAPA PARTE 2 -->
+<section data-background-color="#f6f2fd">
+  <div class="cover">
+    <div class="hero">📚 🔎</div>
+    <h1>Reading descriptions</h1>
+    <p class="sub">Drácula, Nárnia, Harry Potter, Matilda</p>
+    <div class="pill">Parte 2 · Character or setting?</div>
+    <div class="missions">
+      <div class="mission"><div class="ico">🧍</div><div class="lb">Personagem</div></div>
+      <div class="mission"><div class="ico">🏞️</div><div class="lb">Cenário</div></div>
+      <div class="mission"><div class="ico">😇</div><div class="lb">Herói</div></div>
+      <div class="mission"><div class="ico">😈</div><div class="lb">Vilão</div></div>
+    </div>
+  </div>
+  <aside class="notes">
+    Comece dizendo os títulos em voz alta: Drácula, Nárnia, Harry Potter, Percy Jackson, Matilda.
+    A turma reage. Esse é o gancho — eles vão ler os livros de verdade, não texto de apostila.
+  </aside>
+</section>
+
+<!-- 15 PARA COMEÇAR -->
+<section>
+  <span class="tag y">🚀 Para começar <span class="t">· 3 min</span></span>
+  <p class="lead">Descreva um <b>herói</b> de que você gosta.<br>E o que faz um <b>vilão</b> ser vilão?</p>
+  <div class="cards" style="margin-top:1.1rem;">
+    <div class="card" style="cursor:default;"><span class="ico">😇</span>Hero</div>
+    <div class="card" style="cursor:default;"><span class="ico">😈</span>Villain</div>
+    <div class="card" style="cursor:default;"><span class="ico">🏰</span>Lugar feliz</div>
+    <div class="card" style="cursor:default;"><span class="ico">🌑</span>Lugar sombrio</div>
+  </div>
+  <aside class="notes">
+    <b>3 minutos, em português.</b> Anote no quadro os adjetivos que eles usarem — corajoso, malvado,
+    escuro. Você vai reaproveitar quando mostrar que descrição é feita de adjetivo.
+  </aside>
+</section>
+
+<!-- 16 FOCO: O QUE É DESCRIÇÃO -->
+<section>
+  <span class="tag p">🔎 Como reconhecer uma descrição</span>
+  <div class="cards wide" data-cards>
+    <button class="card"><span class="ico">🎨</span><span class="txt">Muitos adjetivos, poucos verbos<span class="pt">A ação para, o foco vira a imagem</span></span></button>
+    <button class="card"><span class="ico">🅱️</span><span class="txt">O verbo é was / were<span class="pt">Não indica ação, indica como a coisa é</span></span></button>
+  </div>
+  <p class="tip">Se o texto está cheio de <em>correu, gritou, pulou</em> → é ação, não é descrição.</p>
+  <aside class="notes">
+    Este é o critério que o aluno leva para a prova. Escreva no quadro:
+    <b>adjetivo demais + was/were = descrição</b>.<br><br>
+    Faça o teste ao vivo com uma frase inventada por você, tipo "The old house was dark and cold" —
+    e outra com ação — "He opened the door and ran".
+  </aside>
+</section>
+
+<!-- 17 FOCO: PERSONAGEM OU CENÁRIO -->
+<section>
+  <span class="tag p">🧍 Personagem &nbsp;ou&nbsp; 🏞️ cenário?</span>
+  <div class="cols" style="display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;">
+    <div>
+      <p class="sub" style="color:var(--purple-d);font-weight:800;">É PERSONAGEM se aparece</p>
+      <div class="cards" data-cards style="flex-direction:column;">
+        <button class="card"><span class="ico">👁️</span>partes do corpo<span class="pt">hair, face, eyes, nose</span></button>
+        <button class="card"><span class="ico">👕</span>roupas e objetos pessoais<span class="pt">cap, cloak, glasses</span></button>
+        <button class="card"><span class="ico">🧑</span>he · she · they</button>
+      </div>
+    </div>
+    <div>
+      <p class="sub" style="color:var(--green-d);font-weight:800;">É CENÁRIO se aparece</p>
+      <div class="cards" data-cards style="flex-direction:column;">
+        <button class="card"><span class="ico">🪑</span>objetos e móveis<span class="pt">table, chairs, bedstead</span></button>
+        <button class="card"><span class="ico">🚪</span>nomes de lugares<span class="pt">room, house, forest</span></button>
+        <button class="card"><span class="ico">👉</span>this · that · it</button>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    Truque de leitura: <b>o aluno não precisa entender o texto, precisa caçar substantivo.</b>
+    Achou "hair" e "face"? Personagem. Achou "table" e "chairs"? Cenário. Funciona mesmo sem
+    saber o resto do vocabulário — e é exatamente o que a AE4 pede.
+  </aside>
+</section>
+
+<!-- 18 PAUSE E RESPONDA -->
+<section>
+  <span class="tag r">✋ Pause e responda</span>
+  <p class="lead">"As descrições em textos literários apresentam muitos verbos de ação e não têm muitos adjetivos."</p>
+  <div class="opts" data-quiz data-ok="Isso! É o contrário: muitos adjetivos, poucos verbos ✅" data-no="Ao contrário: descrição tem MUITOS adjetivos e POUCOS verbos de ação.">
+    <button class="opt" data-correct="false"><span class="key">A</span> Correta</button>
+    <button class="opt" data-correct="true"><span class="key">B</span> Incorreta</button>
+  </div>
+  <aside class="notes">
+    Afirmação invertida de propósito. Se errarem, não é falha de inglês — é de atenção.
+    Leia em voz alta devagar antes de deixarem clicar.
+  </aside>
+</section>
+
+<!-- 19 OS QUATRO TRECHOS -->
+<section>
+  <span class="tag g">📖 Description detective <span class="t">· livro p. 236 · 15 min</span></span>
+  <div id="litArea"></div>
+  <aside class="notes">
+    Atividades 1 a 4 da Aula 9. <b>Um trecho por vez</b> — leia em voz alta, deixe 1 minuto,
+    depois deixe clicarem.<br><br>
+    Gabarito: Golding = personagem · Montgomery = cenário · Lewis = NÃO é descrição (é ação) ·
+    Stoker = personagem.<br><br>
+    O terceiro (Nárnia) é o mais importante: é o único que NÃO é descrição. Peça para provarem
+    apontando os verbos de ação — <i>kept saying, raised</i>.
+  </aside>
+</section>
+
+<!-- 20 POSITIVO x NEGATIVO -->
+<section>
+  <span class="tag y">😇 &nbsp;×&nbsp; 😈 Positive or negative?</span>
+  <p class="lead">O autor escolhe as palavras para você <b>gostar</b> ou <b>não gostar</b> do personagem.</p>
+  <div class="bubbles">
+    <div class="bub b">Lucy: an <b>inquisitive</b> person, a heart full of <b>kindness</b> 😇<span class="pt">curiosa, cheia de gentileza</span></div>
+    <div class="bub a">Miss Trunchbull: a <b>gigantic holy terror</b>, a <b>fierce tyrannical monster</b> 😈<span class="pt">um terror gigante, um monstro tirano</span></div>
+  </div>
+  <p class="tip">Não precisa entender tudo. Ache as <b>palavras-chave</b>.</p>
+  <aside class="notes">
+    Lucy é de Nárnia, Miss Trunchbull é de Matilda. Se a turma conhece os filmes, puxe a memória —
+    ancorar em algo que já sabem faz o inglês descer muito mais fácil.<br><br>
+    Frase-chave: <b>"não precisa entender tudo, ache as palavras-chave"</b>. É a mesma estratégia
+    de recomposição que a gente usou no 6º ano.
+  </aside>
+</section>
+
+<!-- 21 PAUSE E RESPONDA -->
+<section>
+  <span class="tag r">✋ Pause e responda</span>
+  <p class="lead">Este trecho descreve alguém <b>bom</b> ou <b>mau</b>?</p>
+  <div class="story" style="margin-bottom:.8rem;">
+    <p>"His eyes were very, very shiny, which made him look both <b>hungry</b> and <b>angry</b>; he was a
+       <b>greedy</b> and <b>mean</b> man who was always thinking of <b>evil</b> plans."</p>
+  </div>
+  <div class="opts" data-quiz data-ok="Isso! greedy, mean, evil — vilão puro 😈" data-no="Olhe as palavras-chave: greedy, mean, evil plans.">
+    <button class="opt" data-correct="false"><span class="key">A</span> Positive 😇</button>
+    <button class="opt" data-correct="true"><span class="key">B</span> Negative 😈</button>
+  </div>
+  <aside class="notes">
+    É o Conde Olaf, de <i>Desventuras em Série</i> (Lemony Snicket). Conte depois de corrigir —
+    muitos viram a série.<br><br>
+    Peça para lerem em voz alta só as cinco palavras destacadas. Sozinhas, já entregam o tom.
+  </aside>
+</section>
+
+<!-- 22 HARRY POTTER -->
+<section>
+  <span class="tag g">⚡ Find the answer <span class="t">· 8 min</span></span>
+  <div class="story" style="margin-bottom:.7rem;">
+    <div class="who">📕 Harry Potter and the Philosopher's Stone</div>
+    <p>Harry had always been small and skinny for his age. [...] Harry had knobbly knees, black hair
+       and bright <b>green</b> eyes. He wore round glasses held together with a lot of <b>sellotape</b>
+       because of all the times Dudley had punched him in the nose. The only thing Harry liked about
+       his appearance was a very thin <b>scar</b> on his forehead which was shaped like a bolt of lightning.</p>
+  </div>
+  <div class="qbox">
+    <div class="counter" id="hpCounter"></div>
+    <div class="qtext" id="hpQ"></div>
+    <div class="opts" id="hpOpts" style="max-width:100%;"></div>
+  </div>
+  <aside class="notes">
+    Exercício 5 do Caderno de Exercícios. <i>Sellotape</i> é fita adesiva — está no glossário do livro.<br><br>
+    Aqui a habilidade muda: não é mais classificar o texto, é <b>localizar informação específica</b>
+    dentro dele. Peça para sublinharem no texto antes de responder.
+  </aside>
+</section>
+
+<!-- 23 PRODUÇÃO FINAL -->
+<section>
+  <span class="tag y">⭐ Describe someone <span class="t">· 8 min</span></span>
+  <h2>Sua vez</h2>
+  <p class="sub">Descreva um personagem que você gosta — de livro, filme ou série.</p>
+  <div class="writebox" style="font-size:1.3rem;line-height:2.3;">
+    <input type="text" class="inline" placeholder="nome do personagem" style="width:11rem;">
+    <select class="inline sel"><option>is</option><option>are</option></select>
+    <select class="inline sel">
+      <option>a hero</option><option>a villain</option>
+    </select>
+    <span class="fx">.</span><br>
+    <select class="inline sel"><option>He</option><option>She</option><option>They</option><option>It</option></select>
+    <select class="inline sel"><option>is</option><option>are</option></select>
+    <input type="text" class="inline" placeholder="adjetivo" style="width:8rem;">
+    <span class="fx">and</span>
+    <input type="text" class="inline" placeholder="adjetivo" style="width:8rem;">
+    <span class="fx">.</span>
+  </div>
+  <p class="tip">Exemplo: <em>Miss Trunchbull is a villain. She is fierce and cruel.</em></p>
+  <aside class="notes">
+    <b>Evidência da Parte 2.</b> Print ou cópia no caderno.<br><br>
+    Deixe usarem dicionário online para achar os adjetivos — no 6º ano isso é conteúdo de aula,
+    aqui já é ferramenta. Quem quiser, escreve o parágrafo inteiro no caderno.
+  </aside>
+</section>
+
+<!-- 24 FIM -->
+<section>
+  <div class="center">
+    <div style="font-size:5.5rem;line-height:1;">🏆</div>
+    <h1 style="font-size:2.8rem;">Well done!</h1>
+    <p class="sub">Antes de sair:</p>
+    <div class="missions">
+      <div class="mission"><div class="ico">➡️</div><div class="lb">Um plano seu<br>com going to</div></div>
+      <div class="mission"><div class="ico">🔎</div><div class="lb">Como saber se<br>é descrição?</div></div>
+      <div class="mission"><div class="ico">🧍</div><div class="lb">Personagem<br>ou cenário?</div></div>
+    </div>
+    <p class="tip">Total: <b class="scoreEcho">0</b> estrelas ⭐</p>
+  </div>
+  <aside class="notes">
+    Fechamento das duas aulas. A segunda pergunta é a que mais vale: se saírem sabendo
+    "muitos adjetivos e was/were = descrição", levam uma ferramenta que serve em qualquer prova
+    de leitura, inclusive em português.
+  </aside>
+</section>
+
+</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.1/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.1/dist/plugin/notes.js"></script>
+<script>
+Reveal.initialize({
+  hash:true, slideNumber:'c/t', transition:'slide', transitionSpeed:'fast',
+  controls:true, progress:true, margin:0.06, width:1000, height:640,
+  plugins:[ RevealNotes ]
+});
+
+/* ---------- placar ---------- */
+var stars = 0;
+function addStar(n){
+  stars += (n || 1);
+  var el = document.getElementById('scoreN');
+  el.textContent = stars;
+  var box = document.getElementById('score');
+  box.style.transform = 'scale(1.18)';
+  setTimeout(function(){ box.style.transform = 'scale(1)'; }, 180);
+  document.querySelectorAll('.scoreEcho').forEach(function(e){ e.textContent = stars; });
+}
+
+/* ---------- faixa de feedback ---------- */
+var fbTimer;
+function flash(ok, msg){
+  var fb = document.getElementById('fb');
+  document.getElementById('fbIco').textContent = ok ? '🎉' : '🤔';
+  document.getElementById('fbTxt').textContent = msg;
+  fb.className = 'fb show ' + (ok ? 'ok' : 'no');
+  clearTimeout(fbTimer);
+  fbTimer = setTimeout(function(){ fb.className = 'fb ' + (ok ? 'ok' : 'no'); }, 2600);
+}
+
+/* ---------- som curto ---------- */
+var actx = null;
+function tone(freq, dur, type){
+  try{
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    var o = actx.createOscillator(), g = actx.createGain();
+    o.type = type || 'sine'; o.frequency.value = freq;
+    o.connect(g); g.connect(actx.destination);
+    g.gain.setValueAtTime(0.12, actx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + dur);
+    o.start(); o.stop(actx.currentTime + dur);
+  }catch(e){}
+}
+function sndOk(){ tone(660,0.12); setTimeout(function(){ tone(990,0.18); },110); }
+function sndNo(){ tone(200,0.22,'triangle'); }
+
+/* ---------- cartões: revelar tradução ---------- */
+document.querySelectorAll('[data-cards] .card').forEach(function(c){
+  c.addEventListener('click', function(){ c.classList.toggle('open'); });
+});
+
+/* ---------- múltipla escolha ---------- */
+document.querySelectorAll('[data-quiz]').forEach(function(group){
+  var btns = Array.prototype.slice.call(group.querySelectorAll('.opt'));
+  btns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var ok = btn.dataset.correct === 'true';
+      btns.forEach(function(b){ b.disabled = true; });
+      btn.classList.add(ok ? 'correct' : 'wrong');
+      if(!ok){
+        btns.forEach(function(b){ if(b.dataset.correct === 'true'){ b.classList.add('correct'); } });
+      }
+      if(ok){ sndOk(); addStar(); } else { sndNo(); }
+      flash(ok, ok ? group.dataset.ok : group.dataset.no);
+    });
+  });
+});
+
+
+
+
+
+
+
+/* ---------- motor de perguntas em sequência (Parte 2) ---------- */
+function runSequence(cfg){
+  var qEl = document.getElementById(cfg.q);
+  if(!qEl){ return; }
+  var cEl = document.getElementById(cfg.counter);
+  var oEl = document.getElementById(cfg.opts);
+  var i = 0;
+
+  function shuffle(l){
+    var c = l.slice();
+    for(var k=c.length-1;k>0;k--){ var j=Math.floor(Math.random()*(k+1)); var t=c[k]; c[k]=c[j]; c[j]=t; }
+    return c;
+  }
+
+  function render(){
+    var r = cfg.items[i];
+    cEl.textContent = 'Pergunta ' + (i+1) + ' de ' + cfg.items.length;
+    qEl.textContent = r.q;
+    oEl.innerHTML = '';
+    shuffle([r.a].concat(r.wrong)).forEach(function(label){
+      var b = document.createElement('button');
+      b.className = 'opt';
+      b.textContent = label;
+      b.addEventListener('click', function(){
+        var ok = label === r.a;
+        Array.prototype.forEach.call(oEl.children, function(x){ x.disabled = true; });
+        b.classList.add(ok ? 'correct' : 'wrong');
+        if(!ok){
+          Array.prototype.forEach.call(oEl.children, function(x){
+            if(x.textContent === r.a){ x.classList.add('correct'); }
+          });
+        }
+        if(ok){ sndOk(); addStar(); } else { sndNo(); }
+        flash(ok, ok ? (r.ok || 'Certo! 🎯') : (r.no || ('O certo é: ' + r.a)));
+        setTimeout(function(){
+          i++;
+          if(i < cfg.items.length){ render(); }
+          else{
+            cEl.textContent = '';
+            qEl.textContent = cfg.done || 'Great job! 🏅';
+            oEl.innerHTML = '';
+          }
+        }, 1700);
+      });
+      oEl.appendChild(b);
+    });
+  }
+  render();
+}
+
+
+
+/* ---------- exercícios em sequência do 8º ano ---------- */
+
+/* be + going to na forma negativa — Atividade 2, p. 218 */
+runSequence({
+  q:'ngQ', counter:'ngCounter', opts:'ngOpts',
+  done:'Mandou bem! 🏅',
+  items:[
+    { q:'I ____ visit any friends on the weekend.',
+      a:'am not going to', wrong:['is not going to','are not going to'],
+      ok:'Isso! I → am not going to ✅' },
+    { q:'She ____ cook dinner tonight.',
+      a:'is not going to', wrong:['am not going to','are not going to'],
+      ok:'Certo! She → is not going to ✅' },
+    { q:'They ____ play volleyball next weekend.',
+      a:'are not going to', wrong:['is not going to','am not going to'],
+      ok:'Isso! They é plural → are ✅',
+      no:'They é mais de um. Qual forma do be combina com plural?' },
+    { q:'We are not going to do ____ homework.',
+      a:'any', wrong:['some','a'],
+      ok:'Isso! Frase negativa pede any ✅',
+      no:'A frase tem "not". Frase negativa pede any, não some.' }
+  ]
+});
+
+/* Harry Potter — localizar informação específica (Exercício 5 do Caderno) */
+runSequence({
+  q:'hpQ', counter:'hpCounter', opts:'hpOpts',
+  done:'Você achou tudo no texto! ⚡',
+  items:[
+    { q:'What is this description about?',
+      a:'A person', wrong:['A place','An object'],
+      ok:'Isso! É o Harry Potter 🧙' },
+    { q:'What color are his eyes?',
+      a:'Green', wrong:['Blue','Brown'],
+      ok:'Certo! "bright green eyes" 👀' },
+    { q:'Why do his glasses have sellotape on them?',
+      a:'Because Dudley punched him.', wrong:['Because they are very old.','Because he made them himself.'],
+      no:'Volte no texto: procure a palavra "sellotape" e leia o que vem depois.' },
+    { q:'What is the only thing he likes about his appearance?',
+      a:'His scar.', wrong:['His black hair.','His round glasses.'],
+      ok:'Isso! A cicatriz em forma de raio ⚡' }
+  ]
+});
+
+/* ---------- os quatro trechos literários (Aula 9) ---------- */
+(function(){
+  var area = document.getElementById('litArea');
+  if(!area){ return; }
+
+  var textos = [
+    { livro:'📗 Lord of the Flies — William Golding',
+      texto:'Inside the floating cloak he was tall, thin, and bony; and his hair was red beneath the black cap. His face was crumpled and freckled, and ugly without silliness.',
+      a:'🧍 Character',
+      wrong:['🏞️ Setting','🏃 Não é descrição'],
+      pista:'hair, face, cap, cloak → partes do corpo e roupas. E o verbo é "was".' },
+    { livro:'📙 Anne of Green Gables — L. M. Montgomery',
+      texto:'The little room was neat and clean, and very bare. There was a low, iron bedstead, a small plain table covered with a white cloth, a little chest of drawers with a mirror, and a couple of hard chairs [...].',
+      a:'🏞️ Setting',
+      wrong:['🧍 Character','🏃 Não é descrição'],
+      pista:'room, table, chairs, bedstead → móveis e lugar. Nada de partes do corpo.' },
+    { livro:'📘 The Lion, the Witch and the Wardrobe — C. S. Lewis',
+      texto:'\u201cIt\u2019s all right, it\u2019s all right,\u201d he kept saying to himself. \u201cIt\u2019s only a stone wolf. It can\u2019t hurt me\u201d, and he raised his leg to step over it. [...] \u201cWho\u2019s there? Who\u2019s there? Stand still, stranger, and tell me who you are.\u201d',
+      a:'🏃 Não é descrição',
+      wrong:['🧍 Character','🏞️ Setting'],
+      pista:'kept saying, raised, step, stand → verbos de AÇÃO. Quase não tem adjetivo.' },
+    { livro:'📕 Dracula — Bram Stoker',
+      texto:'His face was a strong – a very strong – aquiline, with high bridge of the thin nose and peculiarly arched nostrils. His eyebrows were very massive, almost meeting over the nose, and with bushy hair that seemed to curl in its own profusion.',
+      a:'🧍 Character',
+      wrong:['🏞️ Setting','🏃 Não é descrição'],
+      pista:'face, nose, nostrils, eyebrows, hair → só partes do corpo. Verbos: was, were.' }
+  ];
+
+  var i = 0;
+  var wrap = document.createElement('div');
+  area.appendChild(wrap);
+
+  function shuffle(l){
+    var c = l.slice();
+    for(var k=c.length-1;k>0;k--){ var j=Math.floor(Math.random()*(k+1)); var t=c[k]; c[k]=c[j]; c[j]=t; }
+    return c;
+  }
+
+  function render(){
+    var r = textos[i];
+    wrap.innerHTML =
+      '<div class="counter">Trecho ' + (i+1) + ' de ' + textos.length + '</div>' +
+      '<div class="story" style="margin:.3rem 0 .7rem;">' +
+        '<div class="who">' + r.livro + '</div>' +
+        '<p style="font-size:1.05rem;">' + r.texto + '</p>' +
+      '</div>' +
+      '<div class="opts" id="litOpts" style="max-width:100%;flex-direction:row;flex-wrap:wrap;"></div>';
+
+    var opts = wrap.querySelector('#litOpts');
+    shuffle([r.a].concat(r.wrong)).forEach(function(label){
+      var b = document.createElement('button');
+      b.className = 'opt';
+      b.style.cssText = 'flex:1 1 9rem;justify-content:center;text-align:center;';
+      b.textContent = label;
+      b.addEventListener('click', function(){
+        var ok = label === r.a;
+        Array.prototype.forEach.call(opts.children, function(x){ x.disabled = true; });
+        b.classList.add(ok ? 'correct' : 'wrong');
+        if(!ok){
+          Array.prototype.forEach.call(opts.children, function(x){
+            if(x.textContent === r.a){ x.classList.add('correct'); }
+          });
+        }
+        if(ok){ sndOk(); addStar(); } else { sndNo(); }
+        flash(ok, r.pista);
+        setTimeout(function(){
+          i++;
+          if(i < textos.length){ render(); }
+          else {
+            wrap.innerHTML = '<div class="center" style="padding:2rem 0;">' +
+              '<div style="font-size:4rem;">🔎</div>' +
+              '<h2>Detective work done!</h2>' +
+              '<p class="sub">Quatro trechos, quatro clássicos.</p></div>';
+          }
+        }, 3000);
+      });
+      opts.appendChild(b);
+    });
+  }
+  render();
+})();
+
+</script>
+</body>
+</html>
