@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consume Less · 9º ano · Recomposição</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@6.0.1/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@6.0.1/dist/reveal.css">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --green:#3fb618;  --green-d:#2e8a10;  --green-l:#e6f7de;
+    --blue:#1cb0f6;   --blue-d:#1288bd;   --blue-l:#e2f4fe;
+    --yellow:#ffc800; --yellow-d:#d9a800; --yellow-l:#fff6d9;
+    --red:#ff4b4b;    --red-d:#cc3838;    --red-l:#ffe8e8;
+    --purple:#b25cf0; --purple-d:#8c40c2; --purple-l:#f5e8fe;
+    --ink:#22252b;    --ink2:#6d7480;
+    --line:#dfe4ea;   --bg:#fbfcfe;
+  }
+  html,body{background:var(--bg);}
+  .reveal{font-family:'Nunito',system-ui,sans-serif;color:var(--ink);font-weight:700;}
+  .reveal .slides{text-align:left;}
+  .reveal h1,.reveal h2{font-family:'Fredoka',sans-serif;font-weight:700;color:var(--ink);
+    text-transform:none;letter-spacing:0;line-height:1.1;margin:0 0 .3em;}
+  .reveal h1{font-size:3.1rem;}
+  .reveal h2{font-size:2.2rem;}
+  .reveal p{font-size:1.35rem;line-height:1.45;}
+  .reveal em{font-style:normal;color:var(--blue-d);}
+  .reveal .progress{color:var(--green);height:6px;}
+  .reveal .controls{color:var(--blue);}
+  .reveal .slide-number{background:transparent;color:var(--ink2);font-size:.85rem;font-weight:700;}
+
+  /* faixa superior */
+  .tag{display:inline-block;font-family:'Fredoka',sans-serif;font-size:1rem;font-weight:600;
+    color:#fff;background:var(--blue);padding:.4rem 1.1rem;border-radius:999px;margin-bottom:1.1rem;}
+  .tag.g{background:var(--green);} .tag.y{background:var(--yellow);color:#5a4600;}
+  .tag.p{background:var(--purple);} .tag.r{background:var(--red);}
+  .tag .t{opacity:.85;font-weight:500;}
+
+  .lead{font-size:1.75rem;line-height:1.35;max-width:20em;}
+  .sub{color:var(--ink2);font-size:1.15rem;}
+  .tip{color:var(--ink2);font-size:1.05rem;margin-top:1.3rem;}
+
+  /* PLACAR fixo */
+  #score{position:fixed;top:14px;right:18px;z-index:60;
+    font-family:'Fredoka',sans-serif;font-size:1.25rem;color:var(--yellow-d);
+    background:#fff;border:3px solid var(--yellow);border-bottom-width:5px;
+    border-radius:999px;padding:.3rem 1rem;}
+  #score .n{color:var(--ink);}
+
+  /* CARTÕES DE VOCABULÁRIO */
+  .cards{display:flex;flex-wrap:wrap;gap:1rem;margin-top:.5rem;}
+  .card{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:.4rem;min-width:9.5rem;flex:1 1 9.5rem;padding:1.1rem .8rem;
+    background:#fff;border:3px solid var(--line);border-bottom-width:6px;border-radius:20px;
+    font-family:inherit;font-size:1.3rem;font-weight:800;color:var(--ink);
+    cursor:pointer;text-align:center;transition:transform .12s ease,border-color .12s ease;
+  }
+  .card:hover{transform:translateY(-3px);border-color:var(--blue);}
+  .card:active{transform:translateY(2px);border-bottom-width:3px;}
+  .card .ico{font-size:3rem;line-height:1;}
+  .card .pt{font-size:1rem;font-weight:700;color:var(--blue-d);
+    opacity:0;max-height:0;overflow:hidden;transition:opacity .2s ease;}
+  .card.open{border-color:var(--blue);background:var(--blue-l);}
+  .card.open .pt{opacity:1;max-height:4rem;}
+  .cards.wide .card{flex:1 1 100%;flex-direction:row;justify-content:flex-start;
+    gap:1.2rem;text-align:left;padding:1rem 1.4rem;}
+  .cards.wide .card .ico{font-size:2.6rem;}
+  .cards.wide .card .txt{display:flex;flex-direction:column;}
+
+  /* BOTÕES DE RESPOSTA */
+  .opts{display:flex;flex-direction:column;gap:.85rem;margin-top:1.1rem;max-width:30em;}
+  .opt{
+    display:flex;align-items:center;gap:1rem;padding:1.05rem 1.3rem;
+    background:#fff;border:3px solid var(--line);border-bottom-width:6px;border-radius:18px;
+    font-family:inherit;font-size:1.35rem;font-weight:800;color:var(--ink);
+    cursor:pointer;text-align:left;transition:transform .12s ease,border-color .12s ease;
+  }
+  .opt:hover:not(:disabled){transform:translateY(-3px);border-color:var(--blue);}
+  .opt:active:not(:disabled){transform:translateY(2px);border-bottom-width:3px;}
+  .opt:disabled{cursor:default;}
+  .opt .key{flex:0 0 auto;width:2.1rem;height:2.1rem;border-radius:12px;background:#eef1f5;
+    color:var(--ink2);font-size:1.05rem;display:grid;place-items:center;font-family:'Fredoka',sans-serif;}
+  .opt.correct{border-color:var(--green);background:var(--green-l);}
+  .opt.correct .key{background:var(--green);color:#fff;}
+  .opt.wrong{border-color:var(--red);background:var(--red-l);}
+  .opt.wrong .key{background:var(--red);color:#fff;}
+
+  /* FAIXA DE FEEDBACK */
+  .fb{position:fixed;left:0;right:0;bottom:0;z-index:70;transform:translateY(110%);
+    transition:transform .28s cubic-bezier(.2,.9,.3,1.2);
+    padding:1.1rem 2rem;display:flex;align-items:center;gap:1rem;
+    font-family:'Fredoka',sans-serif;font-size:1.5rem;}
+  .fb.show{transform:translateY(0);}
+  .fb.ok{background:var(--green-l);color:var(--green-d);border-top:5px solid var(--green);}
+  .fb.no{background:var(--red-l);color:var(--red-d);border-top:5px solid var(--red);}
+  .fb .big{font-size:2.4rem;}
+
+  /* TABELAS */
+  .reveal table{border-collapse:separate;border-spacing:0 .45rem;width:100%;font-size:1.25rem;}
+  .reveal table td{background:#fff;padding:.75rem 1rem;border-top:3px solid var(--line);
+    border-bottom:3px solid var(--line);}
+  .reveal table td:first-child{border-left:3px solid var(--line);border-radius:14px 0 0 14px;}
+  .reveal table td:last-child{border-right:3px solid var(--line);border-radius:0 14px 14px 0;}
+  .reveal table td.en{font-weight:800;}
+  .reveal table td.pt{color:var(--blue-d);}
+  .reveal table td.flagcell{font-size:1.9rem;width:3rem;}
+
+  /* DIÁLOGO */
+  .bubbles{display:flex;flex-direction:column;gap:.7rem;margin-top:.6rem;max-width:30em;}
+  .bub{padding:.9rem 1.3rem;border-radius:20px;font-size:1.4rem;max-width:85%;}
+  .bub.a{background:var(--blue-l);border:3px solid var(--blue);border-bottom-left-radius:6px;align-self:flex-start;}
+  .bub.b{background:var(--green-l);border:3px solid var(--green);border-bottom-right-radius:6px;align-self:flex-end;}
+  .bub .pt{display:block;font-size:.95rem;color:var(--ink2);font-weight:700;margin-top:.15rem;}
+
+  /* SIMON */
+  .simon{margin-top:.8rem;background:#fff;border:4px solid var(--purple);border-bottom-width:8px;
+    border-radius:26px;padding:2.2rem 1.4rem;text-align:center;}
+  .simon .cmd{font-family:'Fredoka',sans-serif;font-size:2.9rem;color:var(--purple-d);min-height:1.25em;line-height:1.2;}
+  .simon .cmd .sim{color:var(--ink2);}
+  .simon .cmd.trap{color:var(--red);}
+  .btn{font-family:'Fredoka',sans-serif;font-size:1.3rem;color:#fff;background:var(--purple);
+    border:none;border-bottom:5px solid var(--purple-d);border-radius:16px;
+    padding:.75rem 1.8rem;cursor:pointer;margin-top:1.3rem;}
+  .btn:active{transform:translateY(2px);border-bottom-width:2px;}
+  .btn.g{background:var(--green);border-bottom-color:var(--green-d);}
+
+  /* QUIZ PAÍSES */
+  .natflag{font-size:5.5rem;line-height:1;}
+  .natname{font-family:'Fredoka',sans-serif;font-size:2.6rem;margin:.1rem 0 .9rem;}
+  .natopts{display:flex;gap:.8rem;flex-wrap:wrap;}
+  .natopts .opt{flex:1 1 9rem;justify-content:center;text-align:center;}
+  .bar{height:14px;background:#e9edf2;border-radius:999px;overflow:hidden;max-width:26em;margin-bottom:1rem;}
+  .bar i{display:block;height:100%;width:0;background:var(--green);border-radius:999px;transition:width .4s ease;}
+
+  /* FORMULÁRIO */
+  .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem 1.3rem;margin-top:.4rem;}
+  .fgrid label{display:block;font-family:'Fredoka',sans-serif;font-size:1.05rem;color:var(--blue-d);margin-bottom:.25rem;}
+  .fgrid input{width:100%;padding:.75rem .9rem;border:3px solid var(--line);border-bottom-width:5px;
+    border-radius:14px;font-family:inherit;font-size:1.2rem;font-weight:700;color:var(--ink);background:#fff;}
+  .fgrid input:focus{outline:none;border-color:var(--blue);}
+
+  /* CAPA */
+  .cover{text-align:center;}
+  .cover .hero{font-size:6.5rem;line-height:1;}
+  .cover h1{font-size:3.4rem;margin-top:.2rem;}
+  .cover .pill{display:inline-block;background:var(--yellow);color:#5a4600;
+    font-family:'Fredoka',sans-serif;font-size:1.15rem;padding:.45rem 1.4rem;border-radius:999px;margin-top:1rem;}
+
+  /* E-MAIL */
+  .mail{background:#fff;border:3px solid var(--blue);border-bottom-width:6px;border-radius:20px;
+    overflow:hidden;margin-top:.3rem;}
+  .mail .mailhead{background:var(--blue-l);padding:.7rem 1.2rem;display:flex;flex-direction:column;
+    gap:.1rem;font-size:.95rem;color:var(--ink2);border-bottom:3px solid var(--blue);}
+  .mail .mailbody{padding:1rem 1.3rem;}
+  .mail .mailbody p{font-size:1.12rem;line-height:1.5;margin:.45rem 0;}
+  .mail .mailbody b{color:var(--blue-d);}
+
+  /* TEXTO NARRATIVO */
+  .story{background:#fff;border:3px solid var(--green);border-bottom-width:6px;border-radius:20px;
+    padding:1.1rem 1.4rem;margin-top:.3rem;}
+  .story .who{font-family:'Fredoka','Trebuchet MS',sans-serif;font-size:1.3rem;color:var(--green-d);
+    margin-bottom:.5rem;}
+  .story p{font-size:1.15rem;line-height:1.5;margin:.45rem 0;}
+  .story b{color:var(--green-d);}
+
+  /* CAIXA DE PERGUNTA SEQUENCIAL */
+  .qbox{margin-top:.4rem;}
+  .qbox .counter{font-family:'Fredoka','Trebuchet MS',sans-serif;font-size:1rem;color:var(--ink2);}
+  .qbox .qtext{font-family:'Fredoka','Trebuchet MS',sans-serif;font-size:1.9rem;margin:.3rem 0 .2rem;line-height:1.2;}
+
+  /* FRASE COM LACUNAS */
+  .writebox{background:#fff;border:3px solid var(--yellow);border-bottom-width:6px;border-radius:20px;
+    padding:1.4rem 1.3rem;margin-top:.5rem;font-size:1.45rem;line-height:2.4;}
+  .writebox .fx{font-weight:800;}
+  .writebox .inline{font-family:inherit;font-size:1.25rem;font-weight:800;color:var(--blue-d);
+    border:3px solid var(--line);border-bottom-width:5px;border-radius:12px;padding:.3rem .6rem;background:#fff;}
+  .writebox .inline:focus{outline:none;border-color:var(--blue);}
+  .writebox select.sel{color:var(--purple-d);cursor:pointer;}
+
+  .wrongform{color:var(--red);text-decoration:line-through;text-decoration-thickness:3px;}
+  .center{text-align:center;}
+  .missions{display:flex;gap:1rem;justify-content:center;margin-top:1.2rem;flex-wrap:wrap;}
+  .mission{background:#fff;border:3px solid var(--line);border-bottom-width:6px;border-radius:20px;
+    padding:1rem 1.2rem;text-align:center;flex:1 1 8rem;}
+  .mission .ico{font-size:2.6rem;}
+  .mission .lb{font-family:'Fredoka',sans-serif;font-size:1.05rem;margin-top:.3rem;}
+</style>
+</head>
+<body>
+
+<div id="score">⭐ <span class="n" id="scoreN">0</span></div>
+<div class="fb" id="fb"><span class="big" id="fbIco"></span><span id="fbTxt"></span></div>
+
+<div id="score">⭐ <span class="n" id="scoreN">0</span></div>
+<div class="fb" id="fb"><span class="big" id="fbIco"></span><span id="fbTxt"></span></div>
+
+<div id="score">⭐ <span class="n" id="scoreN">0</span></div>
+<div class="fb" id="fb"><span class="big" id="fbIco"></span><span id="fbTxt"></span></div>
+
+<div class="reveal"><div class="slides">
+
+<!-- ===================== PARTE 1 · MODAL VERBS ===================== -->
+
+<!-- 1 CAPA -->
+<section data-background-color="#fbfcfe">
+  <div class="cover">
+    <div class="hero">🛒 🌎</div>
+    <h1>Consume Less</h1>
+    <p class="sub">Modal verbs &amp; the power of advertising</p>
+    <div class="pill">Parte 1 de 2 · 9º ano · ⭐ ganhe estrelas</div>
+    <div class="missions">
+      <div class="mission"><div class="ico">⚠️</div><div class="lb">must</div></div>
+      <div class="mission"><div class="ico">💡</div><div class="lb">should</div></div>
+      <div class="mission"><div class="ico">🎲</div><div class="lb">might</div></div>
+      <div class="mission"><div class="ico">📢</div><div class="lb">Propaganda</div></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <b>S</b> = suas notas. Setas = avançar. <b>ESC</b> = todos os slides. <b>F</b> = tela cheia.<br><br>
+    Este material também fica no ar para eles acessarem em casa — avise isso na primeira aula.
+    O briefing da atividade em grupo está nos últimos slides e pode ser consultado a qualquer momento.
+  </aside>
+</section>
+
+<!-- 2 PARA COMEÇAR -->
+<section>
+  <span class="tag y">🚀 Para começar <span class="t">· 4 min</span></span>
+  <p class="lead">What is <b>consumerism</b>?<br>E quais são as consequências dele na nossa vida?</p>
+  <div class="cards" style="margin-top:1.2rem;">
+    <div class="card" style="cursor:default;"><span class="ico">🛍️</span>Comprar demais</div>
+    <div class="card" style="cursor:default;"><span class="ico">💸</span>Gastar mais</div>
+    <div class="card" style="cursor:default;"><span class="ico">🗑️</span>Lixo</div>
+    <div class="card" style="cursor:default;"><span class="ico">🌡️</span>Meio ambiente</div>
+  </div>
+  <aside class="notes">
+    <b>4 minutos.</b> Aceite português. Puxe pela experiência deles: "quem já comprou uma coisa
+    na Black Friday e nunca usou?" Costuma render — e é exatamente o diálogo que vem a seguir.
+  </aside>
+</section>
+
+<!-- 3 VOCABULÁRIO -->
+<section>
+  <span class="tag">💬 Key words</span>
+  <p class="sub">Clique e tente adivinhar antes.</p>
+  <div class="cards" data-cards>
+    <button class="card"><span class="ico">📢</span>Ads<span class="pt">anúncios</span></button>
+    <button class="card"><span class="ico">🏷️</span>On sale<span class="pt">em promoção</span></button>
+    <button class="card"><span class="ico">🛒</span>Buy<span class="pt">comprar</span></button>
+    <button class="card"><span class="ico">⚠️</span>Be careful<span class="pt">ter cuidado</span></button>
+    <button class="card"><span class="ico">🎧</span>Headphone<span class="pt">fone de ouvido</span></button>
+    <button class="card"><span class="ico">😰</span>Fear of missing out<span class="pt">medo de ficar de fora</span></button>
+  </div>
+  <p class="tip"><em>Fear of missing out</em> (FOMO) é o motor da propaganda: comprar por medo de perder.</p>
+  <aside class="notes">
+    Atividade 1 do livro, p. 241. O <b>FOMO</b> é a palavra que abre a discussão — muitos já
+    conhecem do inglês da internet sem saber o que significa. Peça exemplos da vida deles.
+  </aside>
+</section>
+
+<!-- 4 DIÁLOGO BLACK FRIDAY -->
+<section>
+  <span class="tag">🛍️ Jamie &amp; Sarah</span>
+  <div class="bubbles">
+    <div class="bub a"><b>Jamie:</b> "But honestly, we <b>have to</b> be careful because most of the time, we buy stuff that we don't even need."</div>
+    <div class="bub b"><b>Sarah:</b> "These sales make us feel like we <b>must</b> buy things."</div>
+  </div>
+  <p class="tip">Sarah comprou <em>wireless headphones</em>. Jamie comprou um <em>smartphone</em>. Nenhum dos dois precisava.</p>
+  <aside class="notes">
+    Do diálogo da Aula 1. Pergunte antes de explicar: "o que <i>have to</i> e <i>must</i> estão
+    fazendo nessas frases?" Alguém diz "obrigação". É o gancho.
+  </aside>
+</section>
+
+<!-- 5 FOCO: OBRIGAÇÃO -->
+<section>
+  <span class="tag p">⚠️ must &nbsp;·&nbsp; have to</span>
+  <p class="lead">Servem para dizer que algo é <b>obrigação ou regra</b>.</p>
+  <div class="bubbles">
+    <div class="bub b">I go to school every morning.<span class="pt">simples informação</span></div>
+    <div class="bub a">I <b>must</b> go to school every morning.<span class="pt">agora é obrigação</span></div>
+    <div class="bub a">I <b>have to</b> go to school every morning.<span class="pt">mesma ideia</span></div>
+  </div>
+  <p class="tip">O modal verb não substitui o verbo — ele <b>muda o sentido</b> do verbo que vem depois.</p>
+  <aside class="notes">
+    Essa é a definição que importa: <b>modal verb modifica o sentido do verbo principal</b>.
+    Escreva as três frases no quadro uma embaixo da outra — a diferença fica visível.
+  </aside>
+</section>
+
+<!-- 6 PAUSE E RESPONDA -->
+<section>
+  <span class="tag r">✋ Pause e responda</span>
+  <p class="lead">Qual alternativa indica uma <b>obrigação</b>?</p>
+  <div class="opts" data-quiz data-ok="Isso! O must transforma em obrigação ⚠️" data-no="Essa é só uma informação sobre o hábito. Onde está a obrigação?">
+    <button class="opt" data-correct="true"><span class="key">A</span> I must drink water every day.</button>
+    <button class="opt" data-correct="false"><span class="key">B</span> I drink water every day.</button>
+  </div>
+  <aside class="notes">
+    Peer Instruction: decidem sozinhos, mostram com os dedos, discutem em dupla se dividir.
+  </aside>
+</section>
+
+<!-- 7 FOCO: SHOULD E MIGHT -->
+<section>
+  <span class="tag p">💡 should &nbsp;·&nbsp; 🎲 might</span>
+  <div class="cards wide" data-cards>
+    <button class="card"><span class="ico">💡</span><span class="txt">should = conselho<span class="pt">You should buy second-hand clothes.</span></span></button>
+    <button class="card"><span class="ico">🎲</span><span class="txt">might = possibilidade<span class="pt">We might buy second-hand clothes instead of new ones.</span></span></button>
+  </div>
+  <p class="tip">My friends <b>donate</b> old clothes. → My friends <b>might</b> donate old clothes. <em>(agora é só uma possibilidade)</em></p>
+  <aside class="notes">
+    Da Aula 3, tema <b>fast fashion</b>. Se der tempo, explique o termo: roupa feita pra ser
+    trocada rápido, gerando desperdício, exploração de mão de obra e poluição.<br><br>
+    Quadro: <b>must = tem que · should = seria bom · might = talvez</b>.
+  </aside>
+</section>
+
+<!-- 8 PAUSE E RESPONDA -->
+<section>
+  <span class="tag r">✋ Pause e responda</span>
+  <p class="lead">Como se diz <b>"Você deveria consumir menos"</b>?</p>
+  <p class="sub" style="margin-bottom:.2rem;">You ______ consume less!</p>
+  <div class="opts" data-quiz data-ok="Isso! should = deveria 💡" data-no="Cuidado: 'deveria' é conselho, não obrigação. E depois de should não vem 'to'.">
+    <button class="opt" data-correct="false"><span class="key">A</span> must</button>
+    <button class="opt" data-correct="false"><span class="key">B</span> have to</button>
+    <button class="opt" data-correct="false"><span class="key">C</span> should to</button>
+    <button class="opt" data-correct="true"><span class="key">D</span> should</button>
+  </div>
+  <aside class="notes">
+    A opção C é a pegadinha mais valiosa: <b>should to</b> não existe. Modal verb nunca leva "to"
+    depois. Se alguém cair nela, aproveite — é erro que se repete o ano inteiro.
+  </aside>
+</section>
+
+<!-- 9 NA PRÁTICA: ESCOLHER O MODAL -->
+<section>
+  <span class="tag g">✍️ Let's review <span class="t">· livro p. 246 · 6 min</span></span>
+  <div class="qbox">
+    <div class="counter" id="mvCounter"></div>
+    <div class="qtext" id="mvQ"></div>
+    <div class="opts" id="mvOpts" style="max-width:100%;"></div>
+  </div>
+  <aside class="notes">
+    Atividade 3 da Aula 3, p. 246. A palavra entre parênteses é a chave — leia em voz alta.<br>
+    Gabarito: should (suggestion) · might (possibility) · must (obligation) · might (possibility).
+  </aside>
+</section>
+
+<!-- 10 OS DOIS TEXTOS -->
+<section>
+  <span class="tag g">📄 Which title? <span class="t">· livro p. 243 · 6 min</span></span>
+  <div class="story" style="margin-bottom:.6rem;">
+    <div class="who">📝 Text 1</div>
+    <p style="font-size:1rem;">Many people buy things they don't need. We <b>must</b> think before we buy. You <b>have to</b>
+       take a shopping list to avoid buying extra items. We <b>must</b> use reusable bags instead of plastic ones.</p>
+  </div>
+  <div class="story" style="border-color:var(--purple);">
+    <div class="who" style="color:var(--purple-d);">📝 Text 2</div>
+    <p style="font-size:1rem;">We use a lot of water and electricity at home. We <b>must</b> turn off the lights when we
+       leave the room. We <b>have to</b> take shorter showers to save water. People <b>mustn't</b> leave the tap running.</p>
+  </div>
+  <div class="opts" data-quiz style="margin-top:.7rem;"
+       data-ok="Isso! Text 1 fala de compras, Text 2 fala de casa 🏠"
+       data-no="Leia de novo: qual dos dois fala de lista de compras e sacolas?">
+    <button class="opt" data-correct="true"><span class="key">A</span> Text 1 = The Responsible Shopper's Guide · Text 2 = Small actions at home</button>
+    <button class="opt" data-correct="false"><span class="key">B</span> Text 1 = Small actions at home · Text 2 = The Responsible Shopper's Guide</button>
+  </div>
+  <aside class="notes">
+    Atividade 4 da Aula 1, p. 243. Depois de corrigir, mande <b>circular todos os modal verbs</b>
+    nos dois textos. São nove ao todo. Quem achar todos entendeu.<br><br>
+    Feche com a pergunta do livro: "quais dessas regras você segue na sua vida? E quais não segue?"
+  </aside>
+</section>
+
+<!-- 11 FECHA PARTE 1 -->
+<section>
+  <div class="center">
+    <div style="font-size:5rem;line-height:1;">✅</div>
+    <h1 style="font-size:2.6rem;">Part 1 complete!</h1>
+    <p class="sub">Antes do intervalo:</p>
+    <div class="missions">
+      <div class="mission"><div class="ico">⚠️</div><div class="lb">must serve<br>pra quê?</div></div>
+      <div class="mission"><div class="ico">💡</div><div class="lb">E should?</div></div>
+      <div class="mission"><div class="ico">🎲</div><div class="lb">E might?</div></div>
+    </div>
+    <p class="tip">Você já tem <b class="scoreEcho">0</b> estrelas ⭐</p>
+  </div>
+  <aside class="notes">
+    Rápido e oral. Avise o que vem: "agora vocês vão descobrir como a propaganda usa exatamente
+    esses verbos pra fazer vocês comprarem."
+  </aside>
+</section>
+
+<!-- ===================== PARTE 2 · READING ADS ===================== -->
+
+<!-- 12 CAPA PARTE 2 -->
+<section data-background-color="#f6f2fd">
+  <div class="cover">
+    <div class="hero">📢 🧠</div>
+    <h1>Reading Ads</h1>
+    <p class="sub">Como a propaganda convence você</p>
+    <div class="pill">Parte 2 · Persuasão</div>
+    <div class="missions">
+      <div class="mission"><div class="ico">🧮</div><div class="lb">Razão</div></div>
+      <div class="mission"><div class="ico">❤️</div><div class="lb">Emoção</div></div>
+      <div class="mission"><div class="ico">⭐</div><div class="lb">Autoridade</div></div>
+    </div>
+  </div>
+  <aside class="notes">
+    Abra com a provocação: "vocês acham que propaganda funciona com vocês? Hoje vocês vão ver
+    exatamente como ela é montada — e no fim vão montar uma."
+  </aside>
+</section>
+
+<!-- 13 PARA COMEÇAR -->
+<section>
+  <span class="tag y">🚀 Para começar <span class="t">· 3 min</span></span>
+  <p class="lead">Qual foi a última propaganda que fez você <b>querer comprar</b> alguma coisa?</p>
+  <p class="tip">E por que ela funcionou com você?</p>
+  <aside class="notes">
+    <b>3 minutos.</b> Deixe falarem de TikTok, YouTube, influenciador. Anote no quadro os motivos
+    que eles derem — você vai encaixar cada um numa das três categorias do slide seguinte.
+  </aside>
+</section>
+
+<!-- 14 PRODUTO OU IDEIA -->
+<section>
+  <span class="tag p">🎯 O que o anúncio vende?</span>
+  <div class="cards wide" data-cards>
+    <button class="card"><span class="ico">📦</span><span class="txt">A product or service<span class="pt">um refrigerante, um creme dental, um lanche</span></span></button>
+    <button class="card"><span class="ico">💭</span><span class="txt">An idea<span class="pt">preservar a floresta, consumir menos, doar</span></span></button>
+  </div>
+  <p class="tip">Primeira pergunta a fazer diante de qualquer anúncio: <b>o que está sendo vendido aqui?</b></p>
+  <aside class="notes">
+    Atividade 1 da Aula 9, p. 254. A distinção parece simples mas é reveladora: campanhas de ONG
+    vendem ideia, e marcas grandes às vezes vendem ideia pra vender produto — que é o caso da Dove.
+  </aside>
+</section>
+
+<!-- 15 OS TRÊS ELEMENTOS -->
+<section>
+  <span class="tag p">🧠 Elements of persuasion</span>
+  <div class="cards" data-cards>
+    <button class="card"><span class="ico">🧮</span>Rational arguments<span class="pt">números, dados, provas<br>"Whiter teeth in 3 days"</span></button>
+    <button class="card"><span class="ico">❤️</span>Emotional appeal<span class="pt">sentimento, medo, carinho<br>"caring for the Earth"</span></button>
+    <button class="card"><span class="ico">⭐</span>Use of authority<span class="pt">famoso, especialista<br>Cristiano Ronaldo no anúncio</span></button>
+  </div>
+  <aside class="notes">
+    <b>Estes três são a ferramenta central da aula.</b> Escreva no quadro e deixe até o fim —
+    a atividade em grupo vai exigir que escolham um deles.<br><br>
+    Volte aos motivos que eles deram no slide anterior e classifique cada um. Fica evidente
+    que eles já conheciam as três coisas, só não tinham nome.
+  </aside>
+</section>
+
+<!-- 16 CLASSIFICAR OS ANÚNCIOS -->
+<section>
+  <span class="tag g">🔍 Analyze the ads <span class="t">· livro p. 254-257 · 10 min</span></span>
+  <p class="sub">Abram o livro nas páginas 254 a 257 para ver os anúncios.</p>
+  <div class="qbox">
+    <div class="counter" id="adCounter"></div>
+    <div class="qtext" id="adQ"></div>
+    <div class="opts" id="adOpts" style="max-width:100%;"></div>
+  </div>
+  <aside class="notes">
+    Atividades 1 a 7 da Aula 9. <b>As imagens estão no livro</b> — projete a tela e deixe o livro
+    aberto na carteira.<br><br>
+    Gabarito: Coca-Cola = produto · Dove = ideia, emotional appeal · KFC = produto, use of authority
+    (Cristiano Ronaldo) · Colgate = produto, rational arguments (3 days).<br><br>
+    A Dove é a mais rica: é uma marca vendendo produto <i>através</i> de uma ideia. Vale parar nela.
+  </aside>
+</section>
+
+<!-- 17 POSITION POSTURE COLORS -->
+<section>
+  <span class="tag p">👁️ Como o anúncio é montado</span>
+  <div class="cards" data-cards>
+    <button class="card"><span class="ico">📍</span>Position<span class="pt">onde está a imagem principal — dirige o olhar</span></button>
+    <button class="card"><span class="ico">🧍</span>Posture<span class="pt">a pose das pessoas e animais</span></button>
+    <button class="card"><span class="ico">🎨</span>Colors<span class="pt">quentes = energia · frias = calma · escuras = seriedade</span></button>
+  </div>
+  <p class="tip">Nada num anúncio está ali por acaso. Tudo foi decidido.</p>
+  <aside class="notes">
+    Aula 11, p. 259-261. Essa é a frase da aula: <b>nada está ali por acaso</b>.<br><br>
+    Exemplo do próprio livro: vermelho e branco no anúncio de frango e de creme dental sugerem
+    energia e limpeza; tons escuros na campanha da S.O.S. Mata Atlântica criam seriedade.
+  </aside>
+</section>
+
+<!-- 18 PAUSE E RESPONDA -->
+<section>
+  <span class="tag r">✋ Pause e responda</span>
+  <p class="lead">Um anúncio usa <b>Cristiano Ronaldo</b> segurando o produto.<br>Qual é a estratégia?</p>
+  <div class="opts" data-quiz data-ok="Isso! Use of authority — a fama vale como prova ⭐" data-no="Não tem número nem apelo ao sentimento. O que ele traz é fama.">
+    <button class="opt" data-correct="false"><span class="key">A</span> Rational arguments</button>
+    <button class="opt" data-correct="false"><span class="key">B</span> Emotional appeal</button>
+    <button class="opt" data-correct="true"><span class="key">C</span> Use of authority</button>
+  </div>
+  <aside class="notes">
+    É o anúncio da KFC Arabia do livro. Depois de corrigir, pergunte: "Cristiano Ronaldo entende
+    de frango?" A resposta é não — e é aí que eles entendem o truque.
+  </aside>
+</section>
+
+<!-- 19 A ATIVIDADE - BRIEFING -->
+<section data-background-color="#fffdf4">
+  <span class="tag y">🎬 Atividade em grupo <span class="t">· 5 pessoas</span></span>
+  <h2>Make your own ad</h2>
+  <p class="lead">Seu grupo vai criar um <b>cartaz de campanha em papel</b>.<br>
+     Não para vender um produto — para vender uma <b>ideia</b> sobre consumo.</p>
+  <div class="missions" style="margin-top:1rem;">
+    <div class="mission"><div class="ico">🏫</div><div class="lb">Na aula<br><b>grupo e papéis</b></div></div>
+    <div class="mission"><div class="ico">🏠</div><div class="lb">Em casa<br><b>produção</b></div></div>
+    <div class="mission"><div class="ico">🎤</div><div class="lb">Próxima aula<br><b>apresentação</b></div></div>
+  </div>
+  <p class="tip">Este briefing fica no site. Se esquecer a sua função, consulte em casa.</p>
+  <aside class="notes">
+    <b>12 minutos em aula.</b> Só isto: formar os grupos, sortear os papéis (use os cartões
+    impressos), escolher o tema e rascunhar o slogan. A produção é em casa.<br><br>
+    Temas sugeridos: fast fashion · desperdício de comida · lixo eletrônico · consumo de água ·
+    compras por impulso na Black Friday.
+  </aside>
+</section>
+
+<!-- 20 OS CINCO PAPÉIS -->
+<section>
+  <span class="tag y">👥 Os cinco papéis</span>
+  <p class="sub">Cada pessoa do grupo tem uma função. Ninguém fica sem tarefa.</p>
+  <div class="cards wide" data-cards>
+    <button class="card"><span class="ico">🎨</span><span class="txt">Art Director<span class="pt">Desenha o cartaz e decide onde cada coisa fica</span></span></button>
+    <button class="card"><span class="ico">✍️</span><span class="txt">Copywriter<span class="pt">Escreve o slogan — obrigatoriamente com um modal verb</span></span></button>
+    <button class="card"><span class="ico">🔍</span><span class="txt">Researcher<span class="pt">Traz o argumento ou dado que sustenta a campanha</span></span></button>
+    <button class="card"><span class="ico">🧠</span><span class="txt">Persuasion Analyst<span class="pt">Escolhe a estratégia e justifica as cores</span></span></button>
+    <button class="card"><span class="ico">🎤</span><span class="txt">Spokesperson<span class="pt">Apresenta o cartaz para a turma em 1 minuto</span></span></button>
+  </div>
+  <aside class="notes">
+    <b>O Persuasion Analyst é o cargo mais importante.</b> É ele que tem que usar os conceitos
+    da aula para defender as escolhas do grupo — sem isso, a atividade vira desenho bonito e
+    nada mais.<br><br>
+    Grupo com 4 pessoas: o Researcher acumula com o Copywriter. Com 6: entra um segundo Art Director.
+  </aside>
+</section>
+
+<!-- 21 CHECKLIST -->
+<section>
+  <span class="tag g">✅ O que o cartaz precisa ter</span>
+  <div class="cards" data-cards>
+    <button class="card"><span class="ico">1️⃣</span>Um slogan em inglês<span class="pt">com must, should, mustn't ou might</span></button>
+    <button class="card"><span class="ico">2️⃣</span>Três frases de apoio<span class="pt">em inglês, curtas</span></button>
+    <button class="card"><span class="ico">3️⃣</span>Uma estratégia declarada<span class="pt">rational, emotional ou authority</span></button>
+    <button class="card"><span class="ico">4️⃣</span>Cores escolhidas com intenção<span class="pt">e o grupo tem que saber explicar por quê</span></button>
+  </div>
+  <p class="tip">Exemplos de slogan: <em>You must think before you buy.</em> · <em>We should wear old clothes in new ways.</em></p>
+  <aside class="notes">
+    Os dois exemplos de slogan vieram direto do material da SEDUC (p. 243 e slide 11 da Aula 3) —
+    então são inglês seguro e eles podem se inspirar sem medo.<br><br>
+    Diga o critério em voz alta: <b>o cartaz não precisa ser bonito, precisa ser convincente</b>.
+    Isso tira a pressão de quem não desenha bem.
+  </aside>
+</section>
+
+<!-- 22 COMO SERÁ AVALIADO -->
+<section>
+  <span class="tag r">🎯 Na apresentação</span>
+  <p class="lead">O <b>Spokesperson</b> tem 1 minuto para responder três coisas:</p>
+  <div class="bubbles">
+    <div class="bub a">1. What idea is your ad selling?</div>
+    <div class="bub a">2. Which element of persuasion did you choose — and why?</div>
+    <div class="bub a">3. Why did you choose these colors?</div>
+  </div>
+  <p class="tip">O grupo todo pode ajudar a responder. O Spokesperson só começa.</p>
+  <aside class="notes">
+    <b>São essas três perguntas que valem a nota</b>, não o desenho. Um cartaz simples com resposta
+    boa vale mais que um cartaz caprichado sem argumento — deixe isso claro antes de começarem.<br><br>
+    Cole os cartazes na parede da sala depois. Vira exposição e a turma revê o vocabulário
+    o bimestre inteiro.
+  </aside>
+</section>
+
+<!-- 23 FIM -->
+<section>
+  <div class="center">
+    <div style="font-size:5.5rem;line-height:1;">🏆</div>
+    <h1 style="font-size:2.8rem;">Well done!</h1>
+    <p class="sub">Antes de sair:</p>
+    <div class="missions">
+      <div class="mission"><div class="ico">💡</div><div class="lb">Um conselho<br>com should</div></div>
+      <div class="mission"><div class="ico">🧠</div><div class="lb">As três estratégias<br>de persuasão</div></div>
+      <div class="mission"><div class="ico">👥</div><div class="lb">Qual é a sua<br>função no grupo?</div></div>
+    </div>
+    <p class="tip">Total: <b class="scoreEcho">0</b> estrelas ⭐</p>
+  </div>
+  <aside class="notes">
+    A terceira pergunta é logística mas é a que garante que ninguém chegue na próxima aula
+    dizendo que não sabia o que fazer. Faça um por um.
+  </aside>
+</section>
+
+</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.1/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.1/dist/plugin/notes.js"></script>
+<script>
+Reveal.initialize({
+  hash:true, slideNumber:'c/t', transition:'slide', transitionSpeed:'fast',
+  controls:true, progress:true, margin:0.06, width:1000, height:640,
+  plugins:[ RevealNotes ]
+});
+
+/* ---------- placar ---------- */
+var stars = 0;
+function addStar(n){
+  stars += (n || 1);
+  var el = document.getElementById('scoreN');
+  el.textContent = stars;
+  var box = document.getElementById('score');
+  box.style.transform = 'scale(1.18)';
+  setTimeout(function(){ box.style.transform = 'scale(1)'; }, 180);
+  document.querySelectorAll('.scoreEcho').forEach(function(e){ e.textContent = stars; });
+}
+
+/* ---------- faixa de feedback ---------- */
+var fbTimer;
+function flash(ok, msg){
+  var fb = document.getElementById('fb');
+  document.getElementById('fbIco').textContent = ok ? '🎉' : '🤔';
+  document.getElementById('fbTxt').textContent = msg;
+  fb.className = 'fb show ' + (ok ? 'ok' : 'no');
+  clearTimeout(fbTimer);
+  fbTimer = setTimeout(function(){ fb.className = 'fb ' + (ok ? 'ok' : 'no'); }, 2600);
+}
+
+/* ---------- som curto ---------- */
+var actx = null;
+function tone(freq, dur, type){
+  try{
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    var o = actx.createOscillator(), g = actx.createGain();
+    o.type = type || 'sine'; o.frequency.value = freq;
+    o.connect(g); g.connect(actx.destination);
+    g.gain.setValueAtTime(0.12, actx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + dur);
+    o.start(); o.stop(actx.currentTime + dur);
+  }catch(e){}
+}
+function sndOk(){ tone(660,0.12); setTimeout(function(){ tone(990,0.18); },110); }
+function sndNo(){ tone(200,0.22,'triangle'); }
+
+/* ---------- cartões: revelar tradução ---------- */
+document.querySelectorAll('[data-cards] .card').forEach(function(c){
+  c.addEventListener('click', function(){ c.classList.toggle('open'); });
+});
+
+/* ---------- múltipla escolha ---------- */
+document.querySelectorAll('[data-quiz]').forEach(function(group){
+  var btns = Array.prototype.slice.call(group.querySelectorAll('.opt'));
+  btns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var ok = btn.dataset.correct === 'true';
+      btns.forEach(function(b){ b.disabled = true; });
+      btn.classList.add(ok ? 'correct' : 'wrong');
+      if(!ok){
+        btns.forEach(function(b){ if(b.dataset.correct === 'true'){ b.classList.add('correct'); } });
+      }
+      if(ok){ sndOk(); addStar(); } else { sndNo(); }
+      flash(ok, ok ? group.dataset.ok : group.dataset.no);
+    });
+  });
+});
+
+
+
+
+
+
+
+/* ---------- motor de perguntas em sequência (Parte 2) ---------- */
+function runSequence(cfg){
+  var qEl = document.getElementById(cfg.q);
+  if(!qEl){ return; }
+  var cEl = document.getElementById(cfg.counter);
+  var oEl = document.getElementById(cfg.opts);
+  var i = 0;
+
+  function shuffle(l){
+    var c = l.slice();
+    for(var k=c.length-1;k>0;k--){ var j=Math.floor(Math.random()*(k+1)); var t=c[k]; c[k]=c[j]; c[j]=t; }
+    return c;
+  }
+
+  function render(){
+    var r = cfg.items[i];
+    cEl.textContent = 'Pergunta ' + (i+1) + ' de ' + cfg.items.length;
+    qEl.textContent = r.q;
+    oEl.innerHTML = '';
+    shuffle([r.a].concat(r.wrong)).forEach(function(label){
+      var b = document.createElement('button');
+      b.className = 'opt';
+      b.textContent = label;
+      b.addEventListener('click', function(){
+        var ok = label === r.a;
+        Array.prototype.forEach.call(oEl.children, function(x){ x.disabled = true; });
+        b.classList.add(ok ? 'correct' : 'wrong');
+        if(!ok){
+          Array.prototype.forEach.call(oEl.children, function(x){
+            if(x.textContent === r.a){ x.classList.add('correct'); }
+          });
+        }
+        if(ok){ sndOk(); addStar(); } else { sndNo(); }
+        flash(ok, ok ? (r.ok || 'Certo! 🎯') : (r.no || ('O certo é: ' + r.a)));
+        setTimeout(function(){
+          i++;
+          if(i < cfg.items.length){ render(); }
+          else{
+            cEl.textContent = '';
+            qEl.textContent = cfg.done || 'Great job! 🏅';
+            oEl.innerHTML = '';
+          }
+        }, 1700);
+      });
+      oEl.appendChild(b);
+    });
+  }
+  render();
+}
+
+
+
+
+/* ---------- exercícios em sequência do 9º ano ---------- */
+
+/* escolher o modal verb certo — Atividade 3 da Aula 3, p. 246 */
+runSequence({
+  q:'mvQ', counter:'mvCounter', opts:'mvOpts',
+  done:'Mandou bem! 🏅',
+  items:[
+    { q:'You ____ stop and ask: do I really need this?   (Suggestion)',
+      a:'should', wrong:['must','might'],
+      ok:'Isso! Suggestion → should 💡',
+      no:'A palavra entre parênteses é Suggestion. Qual modal dá conselho?' },
+    { q:'People ____ create a lot of waste if they buy too much.   (Possibility)',
+      a:'might', wrong:['must','should'],
+      ok:'Certo! Possibility → might 🎲',
+      no:'Possibility é possibilidade, não certeza. Qual modal é esse?' },
+    { q:'We ____ change our habits to help the planet.   (Obligation)',
+      a:'must', wrong:['might','should'],
+      ok:'Isso! Obligation → must ⚠️',
+      no:'Obligation é obrigação. É o modal mais forte dos três.' },
+    { q:'This new eco-bag ____ help you carry your things.   (Possibility)',
+      a:'might', wrong:['must','should'],
+      ok:'Certo! De novo possibility → might 🎲' }
+  ]
+});
+
+/* analisar os anúncios — Aula 9, p. 254 a 257 */
+runSequence({
+  q:'adQ', counter:'adCounter', opts:'adOpts',
+  done:'Você já lê propaganda como profissional! 🧠',
+  items:[
+    { q:'Coca-Cola: the ad is trying to sell...',
+      a:'A product', wrong:['An idea'],
+      ok:'Isso! O produto é o refrigerante 🥤' },
+    { q:'Dove — "From caring for your skin to caring for the Earth’s": selling...',
+      a:'An idea', wrong:['A product'],
+      ok:'Isso! Vende a ideia de cuidar do planeta 🌎',
+      no:'Repare no slogan: ele fala da Terra, não do sabonete.' },
+    { q:'Dove: which element of persuasion?',
+      a:'Emotional appeal', wrong:['Rational arguments','Use of authority'],
+      ok:'Certo! Liga a pele humana ao planeta — puro sentimento ❤️' },
+    { q:'KFC Arabia — "Share the taste. Share the passion": which element?',
+      a:'Use of authority', wrong:['Rational arguments','Emotional appeal'],
+      ok:'Isso! Cristiano Ronaldo no anúncio ⭐',
+      no:'Quem aparece no anúncio? A fama dele é que convence.' },
+    { q:'Colgate — "Whiter teeth in 3 days": which element?',
+      a:'Rational arguments', wrong:['Emotional appeal','Use of authority'],
+      ok:'Certo! O número (3 days) funciona como prova 🧮',
+      no:'Repare no "3 days". Número é argumento racional.' },
+    { q:'O que significa "Whiter teeth in 3 days"?',
+      a:'Dentes mais brancos em 3 dias', wrong:['Dentes limpos em 3 dias','Dentes brancos em 3 dias'],
+      ok:'Isso! Whiter é comparativo: MAIS brancos ✅',
+      no:'Cuidado com o -er de whiter: é comparativo, "mais brancos".' }
+  ]
+});
+
+</script>
+</body>
+</html>
