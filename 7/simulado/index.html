@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulado SARESP · Língua Inglesa · 7º ano</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:"Segoe UI", Arial, sans-serif; background:#eef2ff; color:#1f2a44; }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 18px; }
+  header { background:#3b5bdb; color:#fff; border-radius:20px; padding:22px; text-align:center; margin-bottom:18px; }
+  header h1 { margin:0; font-size:2.1rem; }
+  header p { margin:6px 0 0; font-size:1.2rem; opacity:.95; }
+  .card { background:#fff; border-radius:18px; padding:22px; margin-bottom:16px; box-shadow:0 6px 18px rgba(31,42,68,.10); }
+  .hidden { display:none !important; }
+  label { font-size:1.25rem; font-weight:700; display:block; margin:10px 0 6px; }
+  input[type=text] { font-size:1.4rem; padding:12px 16px; border-radius:12px; border:3px solid #c9d6f0; width:100%; }
+  button { font-size:1.35rem; font-weight:700; border:none; border-radius:14px; padding:14px 26px; cursor:pointer; }
+  .btn { background:#ff8a00; color:#fff; }
+  .btn-soft { background:#e8eefc; color:#1f2a44; }
+  .center { text-align:center; }
+  .traps { font-size:1.2rem; background:#fff7e6; border-left:8px solid #ff8a00; border-radius:12px; padding:12px 16px; }
+  .traps b { color:#c2410c; }
+  .texto { font-size:1.3rem; line-height:1.55; background:#f4f7ff; border-left:8px solid #3b5bdb; border-radius:12px; padding:14px 18px; margin-bottom:14px; }
+  .texto h3 { margin:0 0 6px; font-size:1.3rem; }
+  .num { display:inline-block; background:#3b5bdb; color:#fff; border-radius:10px; padding:3px 12px; font-weight:800; font-size:1.1rem; }
+  .tema { display:inline-block; background:#e8eefc; border-radius:10px; padding:3px 10px; font-size:1rem; margin-left:6px; }
+  .enun { font-size:1.45rem; font-weight:700; margin:12px 0 14px; line-height:1.4; }
+  .opt { display:flex; gap:12px; align-items:flex-start; font-size:1.35rem; padding:12px 14px; border:3px solid #e1e7f5; border-radius:14px; margin-bottom:10px; cursor:pointer; background:#fff; }
+  .opt input { width:26px; height:26px; margin-top:3px; flex-shrink:0; }
+  .opt.sel { border-color:#3b5bdb; background:#eef2ff; }
+  .opt.right { border-color:#18a058; background:#dcf5e6; }
+  .opt.wrong { border-color:#e5484d; background:#fde4e4; }
+  .letra { font-weight:800; min-width:28px; }
+  .com { font-size:1.2rem; background:#fffbea; border-radius:12px; padding:12px 16px; margin-top:10px; line-height:1.5; }
+  .com b.t { color:#0e6b3a; }
+  .ensina { font-size:1.15rem; background:#eef9f1; border-radius:12px; padding:12px 16px; margin-top:8px; line-height:1.5; }
+  .score { font-size:2.4rem; font-weight:800; }
+  .ok { color:#18a058; } .no { color:#e5484d; }
+  .aviso { font-size:1.2rem; color:#9b1c1f; font-weight:700; margin-top:10px; }
+  table { width:100%; border-collapse:collapse; font-size:1.2rem; }
+  td, th { padding:8px; border-bottom:2px solid #e8eefc; text-align:left; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Simulado SARESP · Inglês · 7º ano</h1>
+    <p id="sub">E.E. José Roberto Friebolin · 20 questões</p>
+  </header>
+
+  <!-- INÍCIO -->
+  <div id="inicio" class="card">
+    <label for="nome">Seu nome</label>
+    <input type="text" id="nome" maxlength="40" placeholder="Nome completo">
+    <label for="turma">Sua turma</label>
+    <input type="text" id="turma" maxlength="10" placeholder="Ex.: 7º A">
+    <div class="traps" style="margin-top:18px">
+      ⚠️ <b>As 3 armadilhas da prova:</b><br>
+      • <b>DUAS</b> → marque duas alternativas<br>
+      • <b>INCORRETA</b> → procure a errada<br>
+      • <b>RESPECTIVAMENTE</b> → siga a ordem das lacunas
+    </div>
+    <div class="center" style="margin-top:18px"><button class="btn" onclick="comecar()">Começar o simulado ▶</button></div>
+  </div>
+
+  <div id="prova" class="hidden"></div>
+  <div id="fim" class="hidden"></div>
+</div>
+
+<script>
+/* ===================== TEXTOS ===================== */
+const TEXTOS = {
+  A: { titulo:"Text 1 – Marta", corpo:"Marta Vieira da Silva <b>was born</b> in Dois Riachos, Alagoas, in 1986. When she was a child, she <b>played</b> football with boys on the street. She <b>didn't have</b> football boots. In 2000, she <b>moved</b> to Rio de Janeiro. Later, she <b>was named</b> FIFA World Player six times." },
+  B: { titulo:"Text 2 – My childhood", corpo:"When I was 8, I lived with my grandmother in a small town. I <b>used to</b> wake up early and feed the chickens. I <b>could</b> ride a bike, but I <b>couldn't</b> swim. On Sundays, we <b>went</b> to the market and <b>ate</b> pastel." },
+  C: { titulo:"Text 3 – Message", corpo:"Hi Leo!<br>Last weekend was amazing! I visited my cousins in Santos. We swam in the sea and played volleyball on the beach. I didn't want to come back!<br>Kisses,<br>Bia" }
+};
+
+/* ===================== QUESTÕES =====================
+   t: 'one' (uma resposta) | 'two' (marcar DUAS)
+   a: índices certos (começa em 0)
+   c: comentário (por que a certa é certa e as outras não)
+   e: como ensinar no erro / no acerto
+   =================================================== */
+const Q = [
+ { txt:'A', tema:'Scanning', t:'one', s:'De acordo com o Text 1, onde Marta nasceu?',
+   o:['No Rio de Janeiro.','Em Dois Riachos, Alagoas.','Em São Paulo.','Em 2000.'], a:[1],
+   c:'"<i>was born in Dois Riachos, Alagoas</i>". O Rio aparece no texto, mas é para onde ela <b>se mudou</b> (moved). "Em 2000" é uma data, não um lugar.',
+   e:'Pergunta WHERE → caçar LUGAR. Quem marcou Rio leu a palavra solta, sem o verbo. Peça: "qual verbo vem antes de Rio?"' },
+ { txt:'A', tema:'Scanning · DUAS', t:'two', s:'Indique as <b>DUAS</b> afirmações corretas sobre Marta.',
+   o:['Ela jogava futebol com meninos na rua.','Ela tinha chuteiras quando era criança.','Ela se mudou para o Rio de Janeiro em 2000.','Ela nasceu em 2000.'], a:[0,2],
+   c:'"<i>played football with boys on the street</i>" e "<i>In 2000, she moved to Rio</i>". Ela NÃO tinha chuteiras (<i>didn\'t have</i>). Ela nasceu em <b>1986</b>.',
+   e:'Armadilha das DUAS. Quem marcou "tinha chuteiras" não viu o <b>didn\'t</b>. Mostre: didn\'t = negativa.' },
+ { txt:'A', tema:'Vocabulário em contexto', t:'one', s:'No Text 1, "<i>was named FIFA World Player six times</i>" significa que Marta:',
+   o:['jogou seis vezes na FIFA.','foi eleita a melhor jogadora do mundo seis vezes.','tem seis nomes.','perdeu seis campeonatos.'], a:[1],
+   c:'<i>was named</i> = foi nomeada/eleita. <i>World Player</i> = jogadora do mundo. <i>six times</i> = seis vezes.',
+   e:'Ensine a ler por blocos: "was named" + "World Player" + "six times". Quem marcou "seis nomes" confundiu <i>named</i> com <i>name</i>.' },
+ { txt:'A', tema:'Gênero textual', t:'one', s:'O Text 1 é:',
+   o:['uma receita.','um anúncio.','uma biografia.','um convite.'], a:[2],
+   c:'Conta a vida de uma pessoa em ordem, com datas (1986, 2000) e verbos no passado: é uma <b>biografia</b>.',
+   e:'Pistas de biografia na lousa: NOME + DATAS + PASSADO. Se acertou, peça para apontar as duas datas.' },
+ { txt:'A', tema:'Passado regular', t:'one', s:'No Text 1, os verbos "<i>played</i>" e "<i>moved</i>" estão no:',
+   o:['passado regular.','presente.','futuro.','passado irregular.'], a:[0],
+   c:'Terminam em <b>-ED</b> (play → played, move → moved) = passado <b>regular</b>.',
+   e:'Regra de ouro: terminou com -ED = REGULAR. Quem marcou "irregular" acha que todo passado é irregular.' },
+
+ { txt:'B', tema:'Could / couldn\'t', t:'one', s:'No Text 2, "<i>I couldn\'t swim</i>" quer dizer:',
+   o:['Eu não conseguia nadar.','Eu nadava muito bem.','Eu não queria nadar.','Eu vou nadar.'], a:[0],
+   c:'<i>couldn\'t</i> = could not = <b>não conseguia</b>. "Não queria" seria <i>didn\'t want</i>.',
+   e:'Lousa: could = conseguia · couldn\'t = NÃO conseguia. Peça uma frase pessoal: "When I was 5, I couldn\'t…"' },
+ { txt:'B', tema:'Used to', t:'one', s:'No Text 2, "<i>I used to wake up early</i>" significa:',
+   o:['Eu acordei tarde ontem.','Eu costumava acordar cedo.','Eu vou acordar cedo.','Eu nunca acordo cedo.'], a:[1],
+   c:'<i>used to</i> = <b>costumava</b>, um hábito do passado. <i>early</i> = cedo.',
+   e:'Compare com a vida deles: "I used to watch cartoons." Quem errou provavelmente não sabia <i>early</i> (cedo × late = tarde).' },
+ { txt:'B', tema:'INCORRETA', t:'one', s:'Sobre o Text 2, indique a alternativa <b>INCORRETA</b>.',
+   o:['A pessoa morava com a avó.','A pessoa sabia andar de bicicleta.','A pessoa sabia nadar.','Aos domingos, eles iam à feira.'], a:[2],
+   c:'O texto diz "<i>I couldn\'t swim</i>" (não conseguia nadar). Então "sabia nadar" é a <b>errada</b>. As outras estão no texto.',
+   e:'Armadilha do INCORRETA. Quem marcou outra alternativa procurou a CERTA. Peça: "circule a palavra INCORRETA antes de ler".' },
+ { txt:'B', tema:'Passado irregular · respectivamente', t:'one', s:'No Text 2, "<i>went</i>" e "<i>ate</i>" são o passado, <b>respectivamente</b>, de:',
+   o:['get / take','go / eat','want / eight','go / have'], a:[1],
+   c:'go → <b>went</b> · eat → <b>ate</b>. Respectivamente = na mesma ordem. <i>eight</i> é o número 8 (som parecido!).',
+   e:'Jogo rápido oral: diga o presente, a turma responde o passado (go–went, eat–ate, see–saw, have–had).' },
+
+ { txt:null, tema:'Skimming', t:'one', s:'Título de notícia: "<i>Students in Guarulhos plant 500 trees near their school</i>". A notícia fala sobre:',
+   o:['alunos que plantaram árvores perto da escola.','uma escola nova em Guarulhos.','500 alunos que mudaram de escola.','a venda de árvores.'], a:[0],
+   c:'<i>Students</i> = alunos · <i>plant</i> = plantam · <i>trees</i> = árvores · <i>near their school</i> = perto da escola.',
+   e:'Skimming: só o título já basta. Peça: "qual palavra te deu a pista?" (plant / trees).' },
+ { txt:null, tema:'Gênero textual', t:'one', s:'"<i>Pancakes – You need: 2 eggs, 1 cup of milk, flour. Step 1: Mix the eggs and the milk. Step 2: Add the flour.</i>" Esse texto é:',
+   o:['uma notícia.','uma receita.','uma carta.','uma biografia.'], a:[1],
+   c:'Lista de ingredientes (<i>You need</i>) + passos (<i>Step 1, Step 2</i>) + verbos de ordem (<i>Mix, Add</i>) = <b>receita</b>.',
+   e:'Pistas de instrução: You need / Step / verbo no começo da frase (imperativo).' },
+ { txt:null, tema:'Was / were · respectivamente', t:'one', s:'Complete <b>respectivamente</b>: "Yesterday we ___ at the beach. My brother ___ very happy."',
+   o:['was / were','were / was','are / is','were / were'], a:[1],
+   c:'<i>we</i> → <b>were</b> · <i>my brother</i> (he) → <b>was</b>. "Yesterday" pede passado, por isso não é <i>are / is</i>.',
+   e:'Lousa: I/he/she/it → WAS · you/we/they → WERE. Quem marcou "was / were" inverteu a ordem.' },
+ { txt:null, tema:'Passado regular', t:'one', s:'"Last year, my family ___ Bahia."',
+   o:['visit','visits','visited','visiting'], a:[2],
+   c:'<i>Last year</i> (ano passado) = passado → visit + ed = <b>visited</b>.',
+   e:'Ensine a caçar o marcador de tempo primeiro: last year, yesterday, ago → passado.' },
+ { txt:null, tema:'Passado irregular', t:'one', s:'Qual destes verbos está no passado <b>irregular</b>?',
+   o:['watched','studied','saw','cleaned'], a:[2],
+   c:'<i>saw</i> (de see) não termina em -ED: é <b>irregular</b>. Os outros têm -ED: são regulares.',
+   e:'Peça para eliminarem os que têm -ED. Sobra o irregular.' },
+ { txt:null, tema:'Negativa com didn\'t', t:'one', s:'"She didn\'t ___ TV last night."',
+   o:['watched','watch','watches','watching'], a:[1],
+   c:'Depois de <i>didn\'t</i>, o verbo volta para a forma <b>normal</b>: didn\'t <b>watch</b>. O <i>did</i> já mostra o passado.',
+   e:'Pegadinha clássica. Quem marcou "watched" colocou passado duas vezes. Lousa: DIDN\'T + verbo sem -ed.' },
+ { txt:null, tema:'Pergunta com was / were', t:'one', s:'"___ you at school yesterday?"',
+   o:['Was','Were','Did','Are'], a:[1],
+   c:'Com <i>you</i> usamos <b>were</b>. <i>Yesterday</i> pede passado, então não é <i>Are</i>. <i>Did</i> não combina com "at school" (não tem verbo principal).',
+   e:'Lembre: YOU sempre com WERE, mesmo sendo uma pessoa só.' },
+ { txt:null, tema:'Marcadores de tempo · DUAS', t:'two', s:'Indique as <b>DUAS</b> expressões que indicam <b>passado</b>.',
+   o:['yesterday','tomorrow','last week','next year'], a:[0,2],
+   c:'<i>yesterday</i> = ontem · <i>last week</i> = semana passada. <i>tomorrow</i> (amanhã) e <i>next year</i> (ano que vem) são futuro.',
+   e:'Lousa em duas colunas: PASSADO (yesterday, last, ago) × FUTURO (tomorrow, next).' },
+ { txt:null, tema:'Ago', t:'one', s:'"Two years <b>ago</b>" significa:',
+   o:['daqui a dois anos','há dois anos','durante dois anos','a cada dois anos'], a:[1],
+   c:'<i>ago</i> = <b>atrás / há</b>. Vem depois do tempo: two years ago = há dois anos.',
+   e:'Peça exemplos da vida deles: "Two years ago, I was in the 5th grade."' },
+ { txt:null, tema:'Linha do tempo', t:'one', s:'"<i>Ana was born in 2010. In 2016, she started school. In 2023, she won a math contest.</i>" O que aconteceu por <b>último</b>?',
+   o:['Ana nasceu.','Ana começou a estudar.','Ana ganhou um concurso de matemática.','Ana mudou de cidade.'], a:[2],
+   c:'A data mais recente é <b>2023</b>: <i>she won a math contest</i>. "Mudou de cidade" não está no texto.',
+   e:'Monte a linha do tempo na lousa: 2010 → 2016 → 2023. Quem errou leu a primeira frase e parou.' },
+ { txt:'C', tema:'Scanning · DUAS', t:'two', s:'No Text 3, indique as <b>DUAS</b> coisas que Bia fez no fim de semana.',
+   o:['Nadou no mar.','Jogou vôlei na praia.','Jogou futebol.','Ficou em casa.'], a:[0,1],
+   c:'"<i>We swam in the sea</i>" (swim → swam) e "<i>played volleyball on the beach</i>". Ela foi a Santos, não ficou em casa.',
+   e:'Bom momento para revisar swim → swam (irregular) e play → played (regular) no mesmo texto.' }
+];
+
+const LETRAS = ['A','B','C','D'];
+const $ = id => document.getElementById(id);
+const PROF = new URLSearchParams(location.search).get('prof') === '1';
+let ALUNO = {};
+
+function blocoTexto(k){ const t = TEXTOS[k]; return `<div class="texto"><h3>${t.titulo}</h3>${t.corpo}</div>`; }
+
+function montar(modoProf){
+  let h = '', ultimoTxt = null;
+  Q.forEach((q,i) => {
+    h += `<div class="card" id="q${i}">`;
+    if(q.txt && q.txt !== ultimoTxt) h += blocoTexto(q.txt);
+    ultimoTxt = q.txt;
+    h += `<span class="num">Questão ${i+1}</span><span class="tema">${q.tema}</span>
+          <div class="enun">${q.s}</div>`;
+    q.o.forEach((o,j) => {
+      const tipo = q.t === 'two' ? 'checkbox' : 'radio';
+      const cls = modoProf ? (q.a.includes(j) ? ' right' : '') : '';
+      h += `<label class="opt${cls}" id="o${i}_${j}"><input type="${tipo}" name="q${i}" value="${j}" ${modoProf?'disabled':''} onchange="marcar(${i}, this)">
+            <span class="letra">${LETRAS[j]})</span><span>${o}</span></label>`;
+    });
+    if(modoProf) h += comentario(q);
+    h += `</div>`;
+  });
+  return h;
+}
+
+function comentario(q){
+  const certas = q.a.map(x => LETRAS[x]).join(' e ');
+  return `<div class="com"><b class="t">✔ Resposta: ${certas}</b><br>${q.c}</div>
+          <div class="ensina">👨‍🏫 <b>Como ensinar:</b> ${q.e}</div>`;
+}
+
+function marcar(i, el){
+  const q = Q[i];
+  const box = document.querySelectorAll(`input[name=q${i}]`);
+  if(q.t === 'two'){
+    const marcadas = [...box].filter(b => b.checked);
+    if(marcadas.length > 2){ el.checked = false; }
+  }
+  box.forEach((b,j) => $(`o${i}_${j}`).classList.toggle('sel', b.checked));
+}
+
+function comecar(){
+  const n = $('nome').value.trim(), t = $('turma').value.trim();
+  if(!n || !t){ $(!n?'nome':'turma').focus(); return; }
+  ALUNO = { nome:n, turma:t };
+  $('inicio').classList.add('hidden');
+  $('prova').innerHTML = montar(false) +
+    `<div class="card center"><button class="btn" onclick="entregar()">Entregar o simulado ✔</button><div id="aviso" class="aviso"></div></div>`;
+  $('prova').classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+
+function respostas(i){
+  return [...document.querySelectorAll(`input[name=q${i}]`)].filter(b => b.checked).map(b => +b.value);
+}
+
+function entregar(){
+  const falta = Q.map((q,i) => respostas(i).length === 0 ? i+1 : null).filter(Boolean);
+  if(falta.length){ $('aviso').textContent = 'Faltam as questões: ' + falta.join(', '); $('q'+(falta[0]-1)).scrollIntoView({behavior:'smooth'}); return; }
+  let acertos = 0; const porTema = {};
+  Q.forEach((q,i) => {
+    const r = respostas(i).sort().join(), c = q.a.slice().sort().join();
+    const ok = r === c; if(ok) acertos++;
+    porTema[q.tema] = porTema[q.tema] || {ok:0,n:0}; porTema[q.tema].n++; if(ok) porTema[q.tema].ok++;
+    document.querySelectorAll(`input[name=q${i}]`).forEach(b => b.disabled = true);
+    q.o.forEach((o,j) => {
+      const el = $(`o${i}_${j}`); el.classList.remove('sel');
+      if(q.a.includes(j)) el.classList.add('right');
+      else if(respostas(i).includes(j)) el.classList.add('wrong');
+    });
+    const card = $('q'+i);
+    card.insertAdjacentHTML('beforeend',
+      `<div class="com"><b class="${ok?'ok':'no'}">${ok?'✅ Você acertou!':'❌ Não foi dessa vez.'}</b> Resposta: <b>${q.a.map(x=>LETRAS[x]).join(' e ')}</b><br>${q.c}</div>`);
+  });
+  document.querySelector('#prova .card.center').remove();
+  const nota = (acertos/2).toFixed(1).replace('.',',');
+  $('fim').innerHTML = `<div class="card center">
+      <div style="font-size:1.4rem">${ALUNO.nome} · ${ALUNO.turma}</div>
+      <div class="score">${acertos} / 20</div>
+      <div style="font-size:1.3rem">Nota: <b>${nota}</b></div>
+      <p style="font-size:1.15rem;color:#4a5a7a">📸 Mostre esta tela ao professor. Role para baixo para ver a correção comentada.</p>
+    </div>`;
+  $('fim').classList.remove('hidden');
+  $('prova').before($('fim'));
+  window.scrollTo(0,0);
+}
+
+/* Modo professor: ?prof=1 → gabarito comentado */
+if(PROF){
+  $('sub').textContent = 'Gabarito comentado · Modo professor';
+  $('inicio').classList.add('hidden');
+  const gab = Q.map((q,i) => `<tr><td>${i+1}</td><td><b>${q.a.map(x=>LETRAS[x]).join(' e ')}</b></td><td>${q.tema}</td></tr>`).join('');
+  $('prova').innerHTML = `<div class="card"><h2 style="margin-top:0">Gabarito rápido</h2>
+      <table><tr><th>Questão</th><th>Resposta</th><th>O que avalia</th></tr>${gab}</table></div>` + montar(true);
+  $('prova').classList.remove('hidden');
+}
+</script>
+</body>
+</html>
